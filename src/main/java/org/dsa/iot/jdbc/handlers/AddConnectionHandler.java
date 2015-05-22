@@ -102,6 +102,10 @@ public class AddConnectionHandler extends ActionProvider implements
 		builder.setAction(getConfigureConnectioAction(config));
 		builder.build();
 
+		builder = conn.createChild(JdbcConstants.QUERY);
+		builder.setAction(getQueryAction(config));
+		builder.build();
+
 		status.setValue(new Value("connection created"));
 	}
 }

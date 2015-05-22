@@ -4,25 +4,27 @@ import org.dsa.iot.dslink.node.NodeManager;
 import org.dsa.iot.dslink.node.Permission;
 import org.dsa.iot.dslink.node.actions.Action;
 import org.dsa.iot.dslink.node.actions.Parameter;
+import org.dsa.iot.dslink.node.actions.ResultType;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
 import org.dsa.iot.jdbc.handlers.AddConnectionHandler;
-import org.dsa.iot.jdbc.handlers.ConfigureConnectionAction;
-import org.dsa.iot.jdbc.handlers.DeleteConnectionAction;
-import org.dsa.iot.jdbc.handlers.EditConnectionAction;
+import org.dsa.iot.jdbc.handlers.ConfigureConnectionHandler;
+import org.dsa.iot.jdbc.handlers.DeleteConnectionHandler;
+import org.dsa.iot.jdbc.handlers.EditConnectionHandler;
+import org.dsa.iot.jdbc.handlers.QueryHandler;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
 
 public class ActionProvider {
 
 	public Action getDeleteConnectionAction(NodeManager manager) {
-		Action action = new Action(Permission.READ, new DeleteConnectionAction(
-				manager));
+		Action action = new Action(Permission.READ,
+				new DeleteConnectionHandler(manager));
 		return action;
 	}
 
 	public Action getEditConnectioAction(JdbcConfig config) {
-		Action action = new Action(Permission.READ, new EditConnectionAction(
+		Action action = new Action(Permission.READ, new EditConnectionHandler(
 				config));
 		action.addParameter(new Parameter(JdbcConstants.NAME, ValueType.STRING,
 				new Value(config.getName())));
@@ -52,11 +54,18 @@ public class ActionProvider {
 
 	public Action getConfigureConnectioAction(JdbcConfig config) {
 		Action action = new Action(Permission.READ,
-				new ConfigureConnectionAction(config));
+				new ConfigureConnectionHandler(config));
 		action.addParameter(new Parameter(JdbcConstants.TIMEOUT,
 				ValueType.NUMBER, new Value(config.getTimeout())));
 		action.addParameter(new Parameter(JdbcConstants.POOLABLE,
 				ValueType.BOOL, new Value(config.isPoolable())));
+		return action;
+	}
+
+	public Action getQueryAction(JdbcConfig config) {
+		Action action = new Action(Permission.READ, new QueryHandler(config));
+		action.addParameter(new Parameter(JdbcConstants.SQL, ValueType.STRING));
+		action.setResultType(ResultType.TABLE);
 		return action;
 	}
 }

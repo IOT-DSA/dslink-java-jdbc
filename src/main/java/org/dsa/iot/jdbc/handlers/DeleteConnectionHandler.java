@@ -7,14 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
 
-public class DeleteConnectionAction implements Handler<ActionResult> {
+public class DeleteConnectionHandler implements Handler<ActionResult> {
 
 	private static final Logger LOG = LoggerFactory
-			.getLogger(DeleteConnectionAction.class);
+			.getLogger(DeleteConnectionHandler.class);
 
 	private NodeManager manager;
 
-	public DeleteConnectionAction(NodeManager manager) {
+	public DeleteConnectionHandler(NodeManager manager) {
 		this.manager = manager;
 	}
 

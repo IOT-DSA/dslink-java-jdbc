@@ -11,6 +11,7 @@ public class JdbcConstants {
 	public static final String POOLABLE = "poolable";
 	public static final String CONFIGURATION = "configuration";
 	public static final String DRIVER = "driver";
+	public static final String SQL = "sql";
 
 	// Statuses
 	public static final String STATUS = "status";
@@ -23,5 +24,6 @@ public class JdbcConstants {
 	public static final String EDIT_CONNECTION = "Edit";
 	public static final String DELETE_CONNECTION = "Delete";
 	public static final String CONFIGURE_CONNECTION = "Configure";
+	public static final String QUERY = "Query";
 
 }

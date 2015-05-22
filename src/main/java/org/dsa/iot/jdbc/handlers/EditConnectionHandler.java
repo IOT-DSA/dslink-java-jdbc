@@ -11,15 +11,15 @@ import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.json.JsonObject;
 
-public class EditConnectionAction extends ActionProvider implements
+public class EditConnectionHandler extends ActionProvider implements
 		Handler<ActionResult> {
 
 	private static final Logger LOG = LoggerFactory
-			.getLogger(EditConnectionAction.class);
+			.getLogger(EditConnectionHandler.class);
 
 	private JdbcConfig config;
 
-	public EditConnectionAction(JdbcConfig config) {
+	public EditConnectionHandler(JdbcConfig config) {
 		this.config = config;
 	}
 

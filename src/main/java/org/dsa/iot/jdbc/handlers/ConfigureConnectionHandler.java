@@ -11,15 +11,15 @@ import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.json.JsonObject;
 
-public class ConfigureConnectionAction extends ActionProvider implements
+public class ConfigureConnectionHandler extends ActionProvider implements
 		Handler<ActionResult> {
 
 	private static final Logger LOG = LoggerFactory
-			.getLogger(ConfigureConnectionAction.class);
+			.getLogger(ConfigureConnectionHandler.class);
 
 	private JdbcConfig config;
 
-	public ConfigureConnectionAction(JdbcConfig config) {
+	public ConfigureConnectionHandler(JdbcConfig config) {
 		this.config = config;
 	}
 
