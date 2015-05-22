@@ -54,6 +54,12 @@ public class AddConnectionHandler extends ActionProvider implements
 		Value password = event.getParameter(JdbcConstants.PASSWORD, new Value(
 				""));
 
+		Value driver = event.getParameter(JdbcConstants.DRIVER, new Value(""));
+		if (driver.getString() == null || driver.getString().isEmpty()) {
+			status.setValue(new Value("driver is empty"));
+			return;
+		}
+
 		JdbcConfig config = new JdbcConfig();
 		config.setName(name.getString());
 		config.setUrl(url.getString());
@@ -61,6 +67,7 @@ public class AddConnectionHandler extends ActionProvider implements
 		config.setPassword(password.getString().toCharArray());
 		config.setPoolable(false);
 		config.setTimeout(60);
+		config.setDriverName(driver.getString());
 		LOG.info(config.toString());
 
 		JsonObject object = new JsonObject();
@@ -69,6 +76,7 @@ public class AddConnectionHandler extends ActionProvider implements
 		object.putString(JdbcConstants.USER, config.getUser());
 		object.putBoolean(JdbcConstants.POOLABLE, config.isPoolable());
 		object.putNumber(JdbcConstants.TIMEOUT, config.getTimeout());
+		object.putString(JdbcConstants.DRIVER, config.getDriverName());
 
 		NodeBuilder builder = manager.createRootNode(name.getString());
 		builder.setAttribute(JdbcConstants.ACTION, new Value(true));

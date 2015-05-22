@@ -32,6 +32,8 @@ public class ActionProvider {
 				new Value(config.getUser())));
 		action.addParameter(new Parameter(JdbcConstants.PASSWORD,
 				ValueType.STRING));
+		action.addParameter(new Parameter(JdbcConstants.DRIVER,
+				ValueType.STRING, new Value(config.getDriverName())));
 		return action;
 	}
 
@@ -42,6 +44,8 @@ public class ActionProvider {
 		action.addParameter(new Parameter(JdbcConstants.URL, ValueType.STRING));
 		action.addParameter(new Parameter(JdbcConstants.USER, ValueType.STRING));
 		action.addParameter(new Parameter(JdbcConstants.PASSWORD,
+				ValueType.STRING));
+		action.addParameter(new Parameter(JdbcConstants.DRIVER,
 				ValueType.STRING));
 		return action;
 	}

@@ -12,6 +12,7 @@ public class JdbcConfig {
 	private Node node;
 	private boolean poolable;
 	private Integer timeout;
+	private String driverName;
 
 	public String getName() {
 		return name;
@@ -49,7 +50,8 @@ public class JdbcConfig {
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
 				.append("name", name).append("user", user).append("url", url)
-				.append("pool", poolable).append("timeout", timeout).toString();
+				.append("pool", poolable).append("timeout", timeout)
+				.append("driverName", driverName).toString();
 	}
 
 	public Node getNode() {
@@ -74,5 +76,13 @@ public class JdbcConfig {
 
 	public void setTimeout(Integer timeout) {
 		this.timeout = timeout;
+	}
+
+	public String getDriverName() {
+		return driverName;
+	}
+
+	public void setDriverName(String driverName) {
+		this.driverName = driverName;
 	}
 }

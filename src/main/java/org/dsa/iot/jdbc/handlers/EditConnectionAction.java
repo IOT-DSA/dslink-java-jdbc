@@ -52,17 +52,25 @@ public class EditConnectionAction extends ActionProvider implements
 		Value password = event.getParameter(JdbcConstants.PASSWORD, new Value(
 				""));
 
+		Value driver = event.getParameter(JdbcConstants.DRIVER, new Value(""));
+		if (driver.getString() == null || driver.getString().isEmpty()) {
+			status.setValue(new Value("driver is empty"));
+			return;
+		}
+
 		LOG.info("Old configuration is {}", config);
 		config.setName(name.getString());
 		config.setUrl(url.getString());
 		config.setUser(user.getString());
 		config.setPassword(password.getString().toCharArray());
+		config.setDriverName(driver.getString());
 		LOG.info("New configuration is {}", config);
 
 		JsonObject object = new JsonObject();
 		object.putString(JdbcConstants.NAME, config.getName());
 		object.putString(JdbcConstants.URL, config.getUrl());
 		object.putString(JdbcConstants.USER, config.getUser());
+		object.putString(JdbcConstants.DRIVER, config.getDriverName());
 
 		Node edit = event.getNode();
 		edit.setAction(getEditConnectioAction(config));

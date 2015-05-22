@@ -62,6 +62,7 @@ public class JdbcProvider extends ActionProvider {
 				config.setPassword(node.getPassword());
 				config.setPoolable(object.getBoolean(JdbcConstants.POOLABLE));
 				config.setTimeout(object.getInteger(JdbcConstants.TIMEOUT));
+				config.setDriverName(object.getString(JdbcConstants.DRIVER));
 				config.setNode(node);
 
 				NodeBuilder builder = node
