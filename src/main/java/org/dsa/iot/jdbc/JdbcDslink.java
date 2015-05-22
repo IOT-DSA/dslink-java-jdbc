@@ -19,7 +19,7 @@ public class JdbcDslink extends DSLinkHandler {
 	private static final Logger LOG = LoggerFactory.getLogger(JdbcDslink.class);
 
 	public static void main(String[] args) {
-		args = new String[] { "-b", "http://localhost:8080/conn" };
+		// args = new String[] { "-b", "http://localhost:8080/conn" };
 		DSLinkFactory.startResponder(JdbcConstants.DSLINK_NAME, args,
 				new JdbcDslink());
 	}

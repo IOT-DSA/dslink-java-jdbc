@@ -9,6 +9,7 @@ import org.dsa.iot.dslink.node.Node;
 import org.dsa.iot.dslink.node.NodeBuilder;
 import org.dsa.iot.dslink.node.NodeManager;
 import org.dsa.iot.dslink.node.value.Value;
+import org.dsa.iot.dslink.node.value.ValueType;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.vertx.java.core.json.JsonObject;
@@ -25,6 +26,7 @@ public class JdbcProvider extends ActionProvider {
 		Node superRoot = manager.getNode("/").getNode();
 
 		Node status = superRoot.createChild(JdbcConstants.STATUS).build();
+		status.setValueType(ValueType.STRING);
 		status.setValue(new Value(JdbcConstants.READY));
 
 		NodeBuilder builder = superRoot
@@ -74,6 +76,9 @@ public class JdbcProvider extends ActionProvider {
 				builder = node.createChild(JdbcConstants.CONFIGURE_CONNECTION);
 				builder.setAction(getConfigureConnectioAction(config));
 				builder.build();
+
+				Node status = node.createChild(JdbcConstants.STATUS).build();
+				status.setValue(new Value(JdbcConstants.READY));
 			}
 		}
 	}

@@ -5,6 +5,7 @@ import org.dsa.iot.dslink.node.NodeBuilder;
 import org.dsa.iot.dslink.node.NodeManager;
 import org.dsa.iot.dslink.node.actions.ActionResult;
 import org.dsa.iot.dslink.node.value.Value;
+import org.dsa.iot.dslink.node.value.ValueType;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.dsa.iot.jdbc.provider.ActionProvider;
@@ -34,7 +35,8 @@ public class AddConnectionHandler extends ActionProvider implements
 		Node status = manager.getSuperRoot().getChild(JdbcConstants.STATUS);
 		if (name.getString() != null && !name.getString().isEmpty()) {
 			if (child != null) {
-				status.setValue(new Value("connection alredy exist"));
+				status.setValue(new Value("connection with name "
+						+ name.getString() + " alredy exist"));
 				return;
 			}
 		} else {
@@ -76,6 +78,7 @@ public class AddConnectionHandler extends ActionProvider implements
 		config.setNode(conn);
 
 		Node connStatus = conn.createChild(JdbcConstants.STATUS).build();
+		connStatus.setValueType(ValueType.STRING);
 		connStatus.setValue(new Value(JdbcConstants.CREATED));
 
 		builder = conn.createChild(JdbcConstants.DELETE_CONNECTION);

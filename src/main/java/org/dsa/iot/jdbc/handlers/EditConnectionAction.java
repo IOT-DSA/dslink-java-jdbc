@@ -29,10 +29,12 @@ public class EditConnectionAction extends ActionProvider implements
 
 		Node status = config.getNode().getChild(JdbcConstants.STATUS);
 		Value name = event.getParameter(JdbcConstants.NAME, new Value(""));
-		Node child = config.getNode().getChild(name.getString());
+
+		Node child = config.getNode().getParent().getChild(name.getString());
 		if (name.getString() != null && !name.getString().isEmpty()) {
 			if (child != null) {
-				status.setValue(new Value("connection alredy exist"));
+				status.setValue(new Value("connection with name "
+						+ name.getString() + " alredy exist"));
 				return;
 			}
 		} else {
