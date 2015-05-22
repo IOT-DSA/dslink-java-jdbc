@@ -1,0 +1,35 @@
+apply plugin: 'application'
+apply plugin: 'findbugs'
+apply plugin: 'java'
+
+mainClassName = 'org.dsa.iot.csa.jdbc.JdbcDslink'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+
+dependencies {
+	compile 'org.iot-dsa:dslink:0.3.0-SNAPSHOT'
+	compile 'org.apache.commons:commons-lang3:3.3.2'
+}
+
+run {
+    args System.getProperty("exec.args", "").split() + "-d" + "../dslink.json"
+    workingDir project.buildDir
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+applicationDistribution.from new File(project.projectDir, "/dslink.json")

@@ -1,0 +1,36 @@
+{
+  "name": "jdbc",
+  "version": "0.0.1",
+  "description": "Java JDBC DSLink",
+  "license": "Apache",
+  "author": {
+    "name": "Petr Shvets",
+    "email": "p.shvets@dglogik.com"
+  },
+  "main": "bin/dslink-java-jdbc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IOT-DSA/dslink-java-jdbc"
+  },
+  "bugs": {
+    "url": "https://github.com/IOT-DSA/dslink-java-jdbc/issues"
+  },
+  "configs": {
+    "nodes": {
+      "type": "path",
+      "value": ".nodes.json",
+      "required": true
+    },
+    "key": {
+      "type": "path",
+      "value": ".key",
+      "required": true
+    },
+    "log": {
+      "type": "enum",
+      "value": "info",
+      "required": true
+    }
+  }
+}

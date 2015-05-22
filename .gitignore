@@ -1,0 +1,13 @@
+# Gradle
+.gradle
+build
+
+# Project files
+*.iml
+.idea
+.classpath
+.key
+.nodes.json
+.project
+.settings
+bin
