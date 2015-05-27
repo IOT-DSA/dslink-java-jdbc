@@ -2,7 +2,7 @@ apply plugin: 'application'
 apply plugin: 'findbugs'
 apply plugin: 'java'
 
-mainClassName = 'org.dsa.iot.csa.jdbc.JdbcDslink'
+mainClassName = 'org.dsa.iot.jdbc.JdbcDslink'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 version = '0.0.1-SNAPSHOT'
