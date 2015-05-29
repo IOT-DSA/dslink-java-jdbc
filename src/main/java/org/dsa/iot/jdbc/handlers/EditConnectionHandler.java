@@ -3,6 +3,7 @@ package org.dsa.iot.jdbc.handlers;
 import org.dsa.iot.dslink.node.Node;
 import org.dsa.iot.dslink.node.actions.ActionResult;
 import org.dsa.iot.dslink.node.value.Value;
+import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.dsa.iot.jdbc.provider.ActionProvider;
@@ -28,19 +29,6 @@ public class EditConnectionHandler extends ActionProvider implements
 		LOG.info("Entering edit connection handle");
 
 		Node status = config.getNode().getChild(JdbcConstants.STATUS);
-		Value name = event.getParameter(JdbcConstants.NAME, new Value(""));
-
-		Node child = config.getNode().getParent().getChild(name.getString());
-		if (name.getString() != null && !name.getString().isEmpty()) {
-			if (child != null) {
-				status.setValue(new Value("connection with name "
-						+ name.getString() + " alredy exist"));
-				return;
-			}
-		} else {
-			status.setValue(new Value("name is empty"));
-			return;
-		}
 
 		Value url = event.getParameter(JdbcConstants.URL, new Value(""));
 		if (url.getString() == null || url.getString().isEmpty()) {
@@ -59,24 +47,24 @@ public class EditConnectionHandler extends ActionProvider implements
 		}
 
 		LOG.info("Old configuration is {}", config);
-		config.setName(name.getString());
 		config.setUrl(url.getString());
 		config.setUser(user.getString());
 		config.setPassword(password.getString().toCharArray());
 		config.setDriverName(driver.getString());
+		config.setDataSource(JdbcConnectionHelper.configureDataSource(config));
 		LOG.info("New configuration is {}", config);
-
-		JsonObject object = new JsonObject();
-		object.putString(JdbcConstants.NAME, config.getName());
-		object.putString(JdbcConstants.URL, config.getUrl());
-		object.putString(JdbcConstants.USER, config.getUser());
-		object.putString(JdbcConstants.DRIVER, config.getDriverName());
 
 		Node edit = event.getNode();
 		edit.setAction(getEditConnectioAction(config));
 
 		Node connection = config.getNode();
-		connection.setDisplayName(name.getString());
+
+		JsonObject object = connection
+				.getAttribute(JdbcConstants.CONFIGURATION).getMap();
+		object.putString(JdbcConstants.NAME, config.getName());
+		object.putString(JdbcConstants.URL, config.getUrl());
+		object.putString(JdbcConstants.USER, config.getUser());
+		object.putString(JdbcConstants.DRIVER, config.getDriverName());
 		connection.setAttribute(JdbcConstants.CONFIGURATION, new Value(object));
 		connection.setPassword(config.getPassword());
 	}

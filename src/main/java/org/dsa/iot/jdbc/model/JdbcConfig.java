@@ -1,5 +1,6 @@
 package org.dsa.iot.jdbc.model;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.dsa.iot.dslink.node.Node;
@@ -13,6 +14,7 @@ public class JdbcConfig {
 	private boolean poolable;
 	private Integer timeout;
 	private String driverName;
+	private BasicDataSource dataSource;
 
 	public String getName() {
 		return name;
@@ -84,5 +86,13 @@ public class JdbcConfig {
 
 	public void setDriverName(String driverName) {
 		this.driverName = driverName;
+	}
+
+	public BasicDataSource getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(BasicDataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 }

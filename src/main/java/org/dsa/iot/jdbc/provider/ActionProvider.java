@@ -3,6 +3,7 @@ package org.dsa.iot.jdbc.provider;
 import org.dsa.iot.dslink.node.NodeManager;
 import org.dsa.iot.dslink.node.Permission;
 import org.dsa.iot.dslink.node.actions.Action;
+import org.dsa.iot.dslink.node.actions.Action.InvokeMode;
 import org.dsa.iot.dslink.node.actions.Parameter;
 import org.dsa.iot.dslink.node.actions.ResultType;
 import org.dsa.iot.dslink.node.value.Value;
@@ -26,8 +27,6 @@ public class ActionProvider {
 	public Action getEditConnectioAction(JdbcConfig config) {
 		Action action = new Action(Permission.READ, new EditConnectionHandler(
 				config));
-		action.addParameter(new Parameter(JdbcConstants.NAME, ValueType.STRING,
-				new Value(config.getName())));
 		action.addParameter(new Parameter(JdbcConstants.URL, ValueType.STRING,
 				new Value(config.getUrl())));
 		action.addParameter(new Parameter(JdbcConstants.USER, ValueType.STRING,
@@ -63,7 +62,8 @@ public class ActionProvider {
 	}
 
 	public Action getQueryAction(JdbcConfig config) {
-		Action action = new Action(Permission.READ, new QueryHandler(config));
+		Action action = new Action(Permission.READ, new QueryHandler(config),
+				InvokeMode.ASYNC);
 		action.addParameter(new Parameter(JdbcConstants.SQL, ValueType.STRING));
 		action.setResultType(ResultType.TABLE);
 		return action;

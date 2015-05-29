@@ -6,6 +6,7 @@ import org.dsa.iot.dslink.node.NodeManager;
 import org.dsa.iot.dslink.node.actions.ActionResult;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
+import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.dsa.iot.jdbc.provider.ActionProvider;
@@ -69,6 +70,7 @@ public class AddConnectionHandler extends ActionProvider implements
 		config.setTimeout(60);
 		config.setDriverName(driver.getString());
 		LOG.info(config.toString());
+		config.setDataSource(JdbcConnectionHelper.configureDataSource(config));
 
 		JsonObject object = new JsonObject();
 		object.putString(JdbcConstants.NAME, config.getName());
