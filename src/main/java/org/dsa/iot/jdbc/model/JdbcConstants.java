@@ -7,7 +7,7 @@ public class JdbcConstants {
 	public static final String URL = "url";
 	public static final String USER = "user";
 	public static final String PASSWORD = "password";
-	public static final String TIMEOUT = "timeout";
+	public static final String DEFAULT_TIMEOUT = "default timeout";
 	public static final String POOLABLE = "poolable";
 	public static final String CONFIGURATION = "configuration";
 	public static final String DRIVER = "driver";

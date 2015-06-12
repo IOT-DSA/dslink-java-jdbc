@@ -8,6 +8,7 @@ build
 .classpath
 .key
 .nodes.json
+.nodes.json.bak
 .project
 .settings
 bin

@@ -4,12 +4,12 @@ import org.dsa.iot.dslink.node.NodeManager;
 import org.dsa.iot.dslink.node.Permission;
 import org.dsa.iot.dslink.node.actions.Action;
 import org.dsa.iot.dslink.node.actions.Action.InvokeMode;
+import org.dsa.iot.dslink.node.actions.EditorType;
 import org.dsa.iot.dslink.node.actions.Parameter;
 import org.dsa.iot.dslink.node.actions.ResultType;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
 import org.dsa.iot.jdbc.handlers.AddConnectionHandler;
-import org.dsa.iot.jdbc.handlers.ConfigureConnectionHandler;
 import org.dsa.iot.jdbc.handlers.DeleteConnectionHandler;
 import org.dsa.iot.jdbc.handlers.EditConnectionHandler;
 import org.dsa.iot.jdbc.handlers.QueryHandler;
@@ -32,9 +32,13 @@ public class ActionProvider {
 		action.addParameter(new Parameter(JdbcConstants.USER, ValueType.STRING,
 				new Value(config.getUser())));
 		action.addParameter(new Parameter(JdbcConstants.PASSWORD,
-				ValueType.STRING));
+				ValueType.STRING).setEditorType(EditorType.PASSWORD));
 		action.addParameter(new Parameter(JdbcConstants.DRIVER,
 				ValueType.STRING, new Value(config.getDriverName())));
+		action.addParameter(new Parameter(JdbcConstants.DEFAULT_TIMEOUT,
+				ValueType.NUMBER, new Value(config.getTimeout())));
+		action.addParameter(new Parameter(JdbcConstants.POOLABLE,
+				ValueType.BOOL, new Value(config.isPoolable())));
 		return action;
 	}
 
@@ -45,19 +49,13 @@ public class ActionProvider {
 		action.addParameter(new Parameter(JdbcConstants.URL, ValueType.STRING));
 		action.addParameter(new Parameter(JdbcConstants.USER, ValueType.STRING));
 		action.addParameter(new Parameter(JdbcConstants.PASSWORD,
-				ValueType.STRING));
+				ValueType.STRING).setEditorType(EditorType.PASSWORD));
 		action.addParameter(new Parameter(JdbcConstants.DRIVER,
 				ValueType.STRING));
-		return action;
-	}
-
-	public Action getConfigureConnectioAction(JdbcConfig config) {
-		Action action = new Action(Permission.READ,
-				new ConfigureConnectionHandler(config));
-		action.addParameter(new Parameter(JdbcConstants.TIMEOUT,
-				ValueType.NUMBER, new Value(config.getTimeout())));
+		action.addParameter(new Parameter(JdbcConstants.DEFAULT_TIMEOUT,
+				ValueType.NUMBER));
 		action.addParameter(new Parameter(JdbcConstants.POOLABLE,
-				ValueType.BOOL, new Value(config.isPoolable())));
+				ValueType.BOOL, new Value(true)));
 		return action;
 	}
 

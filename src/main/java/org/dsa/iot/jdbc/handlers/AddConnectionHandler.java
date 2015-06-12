@@ -61,13 +61,16 @@ public class AddConnectionHandler extends ActionProvider implements
 			return;
 		}
 
+		Value timeout = event.getParameter(JdbcConstants.DEFAULT_TIMEOUT);
+		Value poolable = event.getParameter(JdbcConstants.POOLABLE);
+
 		JdbcConfig config = new JdbcConfig();
 		config.setName(name.getString());
 		config.setUrl(url.getString());
 		config.setUser(user.getString());
 		config.setPassword(password.getString().toCharArray());
-		config.setPoolable(false);
-		config.setTimeout(60);
+		config.setPoolable(poolable.getBool());
+		config.setTimeout((Integer) timeout.getNumber());
 		config.setDriverName(driver.getString());
 		LOG.info(config.toString());
 		config.setDataSource(JdbcConnectionHelper.configureDataSource(config));
@@ -77,7 +80,7 @@ public class AddConnectionHandler extends ActionProvider implements
 		object.putString(JdbcConstants.URL, config.getUrl());
 		object.putString(JdbcConstants.USER, config.getUser());
 		object.putBoolean(JdbcConstants.POOLABLE, config.isPoolable());
-		object.putNumber(JdbcConstants.TIMEOUT, config.getTimeout());
+		object.putNumber(JdbcConstants.DEFAULT_TIMEOUT, config.getTimeout());
 		object.putString(JdbcConstants.DRIVER, config.getDriverName());
 
 		NodeBuilder builder = manager.createRootNode(name.getString());
@@ -99,10 +102,6 @@ public class AddConnectionHandler extends ActionProvider implements
 		builder.setAction(getEditConnectioAction(config));
 		builder.build();
 		LOG.info("Connection {} created", conn.getName());
-
-		builder = conn.createChild(JdbcConstants.CONFIGURE_CONNECTION);
-		builder.setAction(getConfigureConnectioAction(config));
-		builder.build();
 
 		builder = conn.createChild(JdbcConstants.QUERY);
 		builder.setAction(getQueryAction(config));

@@ -61,7 +61,7 @@ public class JdbcProvider extends ActionProvider {
 				config.setUser(object.getString(JdbcConstants.USER));
 				config.setPassword(node.getPassword());
 				config.setPoolable(object.getBoolean(JdbcConstants.POOLABLE));
-				config.setTimeout(object.getInteger(JdbcConstants.TIMEOUT));
+				config.setTimeout(object.getInteger(JdbcConstants.DEFAULT_TIMEOUT));
 				config.setDriverName(object.getString(JdbcConstants.DRIVER));
 				config.setNode(node);
 
@@ -72,10 +72,6 @@ public class JdbcProvider extends ActionProvider {
 
 				builder = node.createChild(JdbcConstants.EDIT_CONNECTION);
 				builder.setAction(getEditConnectioAction(config));
-				builder.build();
-
-				builder = node.createChild(JdbcConstants.CONFIGURE_CONNECTION);
-				builder.setAction(getConfigureConnectioAction(config));
 				builder.build();
 
 				builder = node.createChild(JdbcConstants.QUERY);
