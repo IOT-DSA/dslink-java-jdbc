@@ -9,6 +9,7 @@ import org.dsa.iot.dslink.node.actions.Parameter;
 import org.dsa.iot.dslink.node.actions.ResultType;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
+import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.handlers.AddConnectionHandler;
 import org.dsa.iot.jdbc.handlers.DeleteConnectionHandler;
 import org.dsa.iot.jdbc.handlers.EditConnectionHandler;
@@ -33,8 +34,9 @@ public class ActionProvider {
 				new Value(config.getUser())));
 		action.addParameter(new Parameter(JdbcConstants.PASSWORD,
 				ValueType.STRING).setEditorType(EditorType.PASSWORD));
-		action.addParameter(new Parameter(JdbcConstants.DRIVER,
-				ValueType.STRING, new Value(config.getDriverName())));
+		action.addParameter(new Parameter(JdbcConstants.DRIVER, ValueType
+				.makeEnum(JdbcConnectionHelper.getRegisteredDrivers()),
+				new Value(config.getDriverName())));
 		action.addParameter(new Parameter(JdbcConstants.DEFAULT_TIMEOUT,
 				ValueType.NUMBER, new Value(config.getTimeout())));
 		action.addParameter(new Parameter(JdbcConstants.POOLABLE,
@@ -43,6 +45,7 @@ public class ActionProvider {
 	}
 
 	public Action getAddConnectionAction(NodeManager manager) {
+
 		Action action = new Action(Permission.READ, new AddConnectionHandler(
 				manager));
 		action.addParameter(new Parameter(JdbcConstants.NAME, ValueType.STRING));
@@ -50,8 +53,9 @@ public class ActionProvider {
 		action.addParameter(new Parameter(JdbcConstants.USER, ValueType.STRING));
 		action.addParameter(new Parameter(JdbcConstants.PASSWORD,
 				ValueType.STRING).setEditorType(EditorType.PASSWORD));
-		action.addParameter(new Parameter(JdbcConstants.DRIVER,
-				ValueType.STRING));
+		String[] drivers = JdbcConnectionHelper.getRegisteredDrivers();
+		action.addParameter(new Parameter(JdbcConstants.DRIVER, ValueType
+				.makeEnum(drivers), new Value(drivers[0])));
 		action.addParameter(new Parameter(JdbcConstants.DEFAULT_TIMEOUT,
 				ValueType.NUMBER));
 		action.addParameter(new Parameter(JdbcConstants.POOLABLE,
