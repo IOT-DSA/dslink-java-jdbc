@@ -61,7 +61,8 @@ public class AddConnectionHandler extends ActionProvider implements
 			return;
 		}
 
-		Value timeout = event.getParameter(JdbcConstants.DEFAULT_TIMEOUT);
+		Value timeout = event.getParameter(JdbcConstants.DEFAULT_TIMEOUT,
+				new Value(60));
 		Value poolable = event.getParameter(JdbcConstants.POOLABLE);
 
 		JdbcConfig config = new JdbcConfig();
@@ -73,7 +74,12 @@ public class AddConnectionHandler extends ActionProvider implements
 		config.setTimeout((Integer) timeout.getNumber());
 		config.setDriverName(driver.getString());
 		LOG.info(config.toString());
-		config.setDataSource(JdbcConnectionHelper.configureDataSource(config));
+
+		// create DataSource if specified
+		if (poolable.getBool()) {
+			config.setDataSource(JdbcConnectionHelper
+					.configureDataSource(config));
+		}
 
 		JsonObject object = new JsonObject();
 		object.putString(JdbcConstants.NAME, config.getName());

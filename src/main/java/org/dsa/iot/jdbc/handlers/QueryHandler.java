@@ -1,6 +1,7 @@
 package org.dsa.iot.jdbc.handlers;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -130,11 +131,33 @@ public class QueryHandler implements Handler<ActionResult> {
 	}
 
 	private Connection getConnection() throws SQLException {
-		if (config.getDataSource() == null) {
-			config.setDataSource(JdbcConnectionHelper
-					.configureDataSource(config));
+		Connection connection = null;
+		if (config.isPoolable()) {
+			if (config.getDataSource() == null) {
+				config.setDataSource(JdbcConnectionHelper
+						.configureDataSource(config));
+			}
+			connection = config.getDataSource().getConnection();
+		} else {
+			try {
+				Class.forName(config.getDriverName());
+			} catch (ClassNotFoundException e) {
+				LOG.info(e.getMessage());
+			}
+
+			int first = config.getDriverName().indexOf(".");
+			int next = config.getDriverName().indexOf(".", first + 1);
+
+			String jdbcDriver = config.getDriverName().substring(first + 1,
+					next);
+
+			StringBuilder builder = new StringBuilder();
+			builder.append("jdbc:").append(jdbcDriver).append("://")
+					.append(config.getUrl());
+			connection = DriverManager.getConnection(builder.toString(),
+					config.getUser(), String.valueOf(config.getPassword()));
 		}
-		return config.getDataSource().getConnection();
+		return connection;
 	}
 
 	private void setStatusMessage(String message) {

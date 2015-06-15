@@ -46,7 +46,8 @@ public class EditConnectionHandler extends ActionProvider implements
 			return;
 		}
 
-		Value timeout = event.getParameter(JdbcConstants.DEFAULT_TIMEOUT);
+		Value timeout = event.getParameter(JdbcConstants.DEFAULT_TIMEOUT,
+				new Value(60));
 		Value poolable = event.getParameter(JdbcConstants.POOLABLE);
 
 		LOG.info("Old configuration is {}", config);
@@ -55,8 +56,16 @@ public class EditConnectionHandler extends ActionProvider implements
 		config.setPassword(password.getString().toCharArray());
 		config.setDriverName(driver.getString());
 		config.setPoolable(poolable.getBool());
+
+		// create DataSource if specified
 		config.setTimeout((Integer) timeout.getNumber());
-		config.setDataSource(JdbcConnectionHelper.configureDataSource(config));
+		if (poolable.getBool()) {
+			config.setDataSource(JdbcConnectionHelper
+					.configureDataSource(config));
+		} else {
+			config.setDataSource(null);
+		}
+
 		LOG.info("New configuration is {}", config);
 
 		Node edit = event.getNode();
