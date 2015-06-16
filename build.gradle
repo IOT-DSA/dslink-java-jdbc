@@ -8,15 +8,14 @@ targetCompatibility = 1.7
 version = '0.0.1-SNAPSHOT'
 
 repositories {
-	mavenLocal()
-	mavenCentral()
+    mavenCentral()
     maven {
         url 'https://oss.sonatype.org/content/repositories/snapshots/'
     }
 }
 
 dependencies {
-	compile 'org.iot-dsa:dslink:0.3.2-SNAPSHOT'
+	compile 'org.iot-dsa:dslink:0.3.0-SNAPSHOT'
 	compile 'org.apache.commons:commons-lang3:3.3.2'
 	compile 'org.apache.commons:commons-dbcp2:2.1'
 	compile 'mysql:mysql-connector-java:5.1.35'
