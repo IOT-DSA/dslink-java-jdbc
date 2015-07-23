@@ -9,6 +9,9 @@ import java.sql.Statement;
 
 import org.dsa.iot.dslink.methods.StreamState;
 import org.dsa.iot.dslink.node.actions.ActionResult;
+import org.dsa.iot.dslink.node.actions.Parameter;
+import org.dsa.iot.dslink.node.actions.table.Row;
+import org.dsa.iot.dslink.node.actions.table.Table;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
 import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
@@ -17,8 +20,6 @@ import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
-import org.vertx.java.core.json.JsonArray;
-import org.vertx.java.core.json.JsonObject;
 
 public class QueryHandler implements Handler<ActionResult> {
 
@@ -51,7 +52,7 @@ public class QueryHandler implements Handler<ActionResult> {
 				setStatusMessage(e.getMessage());
 			}
 		} else {
-			setStatusMessage("slq is empty");
+			setStatusMessage("sql is empty");
 		}
 	}
 
@@ -71,31 +72,27 @@ public class QueryHandler implements Handler<ActionResult> {
 			ResultSetMetaData meta = rSet.getMetaData();
 			int columnCount = meta.getColumnCount();
 
-			JsonArray columns = new JsonArray();
-			JsonObject object = null;
+			Table table = event.getTable();
 			for (int i = 1; i <= columnCount; i++) {
-				object = new JsonObject();
-				object.putString("name", meta.getColumnName(i));
-				object.putString("type", ValueType.STRING.toJsonString());
-				columns.add(object);
+                ValueType type = ValueType.STRING;
+                Parameter p = new Parameter(meta.getColumnName(i), type);
+                table.addColumn(p);
 			}
 
-			JsonArray updates = new JsonArray();
-			JsonArray value = null;
+            int size = 0;
 			while (rSet.next()) {
-				value = new JsonArray();
+				Row row = new Row();
 				for (int i = 1; i <= columnCount; i++) {
-					value.add(rSet.getString(i));
+                    row.addValue(new Value(rSet.getString(i)));
 				}
-				updates.addArray(value);
+                table.addRow(row);
+                size++;
 			}
-			event.setColumns(columns);
-			event.setUpdates(updates);
 
 			StringBuilder builder = new StringBuilder();
 
 			builder.append("success: ").append("number of rows returned: ")
-					.append(updates.size());
+					.append(size);
 
 			setStatusMessage(builder.toString());
 			event.setStreamState(StreamState.CLOSED);

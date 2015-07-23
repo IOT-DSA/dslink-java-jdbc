@@ -1,7 +1,6 @@
 package org.dsa.iot.jdbc.model;
 
 public class JdbcConstants {
-	public static final String DSLINK_NAME = "jdbc";
 
 	public static final String NAME = "name";
 	public static final String URL = "url";

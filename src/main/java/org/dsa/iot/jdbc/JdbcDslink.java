@@ -18,16 +18,19 @@ public class JdbcDslink extends DSLinkHandler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JdbcDslink.class);
 
-	public static void main(String[] args) {
-		// args = new String[] { "-b", "http://localhost:8080/conn" };
-		DSLinkFactory.startResponder(JdbcConstants.DSLINK_NAME, args,
-				new JdbcDslink());
-	}
+    @Override
+	public boolean isResponder() {
+        return true;
+    }
 
-	@Override
-	public void onResponderConnected(DSLink link) {
-		LOG.info("JDBC DSLink started");
-		JdbcProvider provider = new JdbcProvider();
-		provider.run(link);
+    @Override
+    public void onResponderConnected(DSLink link) {
+        LOG.info("JDBC DSLink started");
+        JdbcProvider provider = new JdbcProvider();
+        provider.run(link);
+    }
+
+	public static void main(String[] args) {
+        DSLinkFactory.start(args, new JdbcDslink());
 	}
 }
