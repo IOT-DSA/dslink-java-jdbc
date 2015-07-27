@@ -28,7 +28,7 @@ public class ActionProvider {
 		Action action = new Action(Permission.READ, new EditConnectionHandler(
 				config));
 		action.addParameter(new Parameter(JdbcConstants.URL, ValueType.STRING,
-				new Value(config.getUrl())));
+				new Value(config.getUrl())).setPlaceHolder("jdbc:mysql://127.0.0.1:3306"));
 		action.addParameter(new Parameter(JdbcConstants.USER, ValueType.STRING,
 				new Value(config.getUser())));
 		action.addParameter(new Parameter(JdbcConstants.PASSWORD,
@@ -48,7 +48,7 @@ public class ActionProvider {
 		Action action = new Action(Permission.READ, new AddConnectionHandler(
 				manager));
 		action.addParameter(new Parameter(JdbcConstants.NAME, ValueType.STRING));
-		action.addParameter(new Parameter(JdbcConstants.URL, ValueType.STRING));
+		action.addParameter(new Parameter(JdbcConstants.URL, ValueType.STRING).setPlaceHolder("jdbc:mysql://127.0.0.1:3306"));
 		action.addParameter(new Parameter(JdbcConstants.USER, ValueType.STRING));
 		action.addParameter(new Parameter(JdbcConstants.PASSWORD,
 				ValueType.STRING).setEditorType(EditorType.PASSWORD));
