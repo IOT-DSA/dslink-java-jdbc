@@ -13,19 +13,11 @@ public class JdbcConnectionHelper {
 	private static String[] cashedDriversName;
 
 	public static BasicDataSource configureDataSource(JdbcConfig config) {
-		int first = config.getDriverName().indexOf(".");
-		int next = config.getDriverName().indexOf(".", first + 1);
-
-		String jdbcDriver = config.getDriverName().substring(first + 1, next);
-		StringBuilder builder = new StringBuilder();
-		builder.append("jdbc:").append(jdbcDriver).append("://")
-				.append(config.getUrl());
-
 		BasicDataSource dataSource = new BasicDataSource();
 		// dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 		dataSource.setDriverClassName(config.getDriverName());
 		// dataSource.setUrl(jdbc:mysql://127.0.0.1:3306);
-		dataSource.setUrl(builder.toString());
+		dataSource.setUrl(config.getUrl());
 		dataSource.setUsername(config.getUser());
 		dataSource.setPassword(String.valueOf(config.getPassword()));
 		dataSource.setInitialSize(3);
