@@ -142,16 +142,7 @@ public class QueryHandler implements Handler<ActionResult> {
 				LOG.info(e.getMessage());
 			}
 
-			int first = config.getDriverName().indexOf(".");
-			int next = config.getDriverName().indexOf(".", first + 1);
-
-			String jdbcDriver = config.getDriverName().substring(first + 1,
-					next);
-
-			StringBuilder builder = new StringBuilder();
-			builder.append("jdbc:").append(jdbcDriver).append("://")
-					.append(config.getUrl());
-			connection = DriverManager.getConnection(builder.toString(),
+			connection = DriverManager.getConnection(config.getUrl(),
 					config.getUser(), String.valueOf(config.getPassword()));
 		}
 		return connection;
