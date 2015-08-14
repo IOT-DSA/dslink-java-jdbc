@@ -19,9 +19,8 @@ import org.dsa.iot.jdbc.model.JdbcConstants;
 public class ActionProvider {
 
 	public Action getDeleteConnectionAction(NodeManager manager) {
-		Action action = new Action(Permission.READ,
-				new DeleteConnectionHandler(manager));
-		return action;
+        return new Action(Permission.READ,
+                new DeleteConnectionHandler(manager));
 	}
 
 	public Action getEditConnectioAction(JdbcConfig config) {
@@ -52,9 +51,17 @@ public class ActionProvider {
 		action.addParameter(new Parameter(JdbcConstants.USER, ValueType.STRING));
 		action.addParameter(new Parameter(JdbcConstants.PASSWORD,
 				ValueType.STRING).setEditorType(EditorType.PASSWORD));
-		String[] drivers = JdbcConnectionHelper.getRegisteredDrivers();
-		action.addParameter(new Parameter(JdbcConstants.DRIVER, ValueType
-				.makeEnum(drivers), new Value(drivers[0])));
+		{
+			String[] drivers = JdbcConnectionHelper.getRegisteredDrivers();
+			Value value;
+			if (drivers.length > 0) {
+				value = new Value(drivers[0]);
+			} else {
+				value = new Value((String) null);
+			}
+			action.addParameter(new Parameter(JdbcConstants.DRIVER, ValueType
+					.makeEnum(drivers), value));
+		}
 		action.addParameter(new Parameter(JdbcConstants.DEFAULT_TIMEOUT,
 				ValueType.NUMBER));
 		action.addParameter(new Parameter(JdbcConstants.POOLABLE,
