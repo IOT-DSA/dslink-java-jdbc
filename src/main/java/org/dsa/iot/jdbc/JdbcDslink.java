@@ -53,11 +53,8 @@ public class JdbcDslink extends DSLinkHandler {
     private void processUrl(ClassLoader loader, URL url) throws Exception {
         final String driverName = Driver.class.getName();
         try (ZipInputStream zis = new ZipInputStream(url.openStream())) {
-            while (true) {
-                ZipEntry entry = zis.getNextEntry();
-                if (entry == null) {
-                    break;
-                }
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
                 {
                     String name = entry.getName();
                     if (entry.isDirectory()
@@ -67,8 +64,8 @@ public class JdbcDslink extends DSLinkHandler {
                 }
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                int read;
                 byte[] buffer = new byte[1024];
+                int read;
                 while ((read = zis.read(buffer)) >= 0) {
                     baos.write(buffer, 0, read);
                 }
@@ -76,10 +73,6 @@ public class JdbcDslink extends DSLinkHandler {
                     continue;
                 }
                 String[] data = baos.toString("UTF-8").split("\n");
-                if (data.length <= 0) {
-                    continue;
-                }
-
                 for (String clazzName : data) {
                     registerDriver(loader, clazzName);
                 }
