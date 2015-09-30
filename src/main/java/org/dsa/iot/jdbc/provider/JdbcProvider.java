@@ -10,9 +10,9 @@ import org.dsa.iot.dslink.node.NodeBuilder;
 import org.dsa.iot.dslink.node.NodeManager;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
+import org.dsa.iot.dslink.util.json.JsonObject;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
-import org.vertx.java.core.json.JsonObject;
 
 public class JdbcProvider extends ActionProvider {
 
@@ -56,13 +56,13 @@ public class JdbcProvider extends ActionProvider {
 				JsonObject object = node.getAttribute(
 						JdbcConstants.CONFIGURATION).getMap();
 				JdbcConfig config = new JdbcConfig();
-				config.setName(object.getString(JdbcConstants.NAME));
-				config.setUrl(object.getString(JdbcConstants.URL));
-				config.setUser(object.getString(JdbcConstants.USER));
+				config.setName((String) object.get(JdbcConstants.NAME));
+				config.setUrl((String) object.get(JdbcConstants.URL));
+				config.setUser((String) object.get(JdbcConstants.USER));
 				config.setPassword(node.getPassword());
-				config.setPoolable(object.getBoolean(JdbcConstants.POOLABLE));
-				config.setTimeout(object.getInteger(JdbcConstants.DEFAULT_TIMEOUT));
-				config.setDriverName(object.getString(JdbcConstants.DRIVER));
+				config.setPoolable((Boolean) object.get(JdbcConstants.POOLABLE));
+				config.setTimeout((Integer) object.get(JdbcConstants.DEFAULT_TIMEOUT));
+				config.setDriverName((String) object.get(JdbcConstants.DRIVER));
 				config.setNode(node);
 
 				NodeBuilder builder = node

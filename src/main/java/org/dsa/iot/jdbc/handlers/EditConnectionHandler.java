@@ -3,14 +3,14 @@ package org.dsa.iot.jdbc.handlers;
 import org.dsa.iot.dslink.node.Node;
 import org.dsa.iot.dslink.node.actions.ActionResult;
 import org.dsa.iot.dslink.node.value.Value;
+import org.dsa.iot.dslink.util.json.JsonObject;
 import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.dsa.iot.jdbc.provider.ActionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vertx.java.core.Handler;
-import org.vertx.java.core.json.JsonObject;
+import org.dsa.iot.dslink.util.handler.Handler;
 
 public class EditConnectionHandler extends ActionProvider implements
 		Handler<ActionResult> {
@@ -75,12 +75,12 @@ public class EditConnectionHandler extends ActionProvider implements
 
 		JsonObject object = connection
 				.getAttribute(JdbcConstants.CONFIGURATION).getMap();
-		object.putString(JdbcConstants.NAME, config.getName());
-		object.putString(JdbcConstants.URL, config.getUrl());
-		object.putString(JdbcConstants.USER, config.getUser());
-		object.putString(JdbcConstants.DRIVER, config.getDriverName());
-		object.putBoolean(JdbcConstants.POOLABLE, config.isPoolable());
-		object.putNumber(JdbcConstants.DEFAULT_TIMEOUT, config.getTimeout());
+		object.put(JdbcConstants.NAME, config.getName());
+		object.put(JdbcConstants.URL, config.getUrl());
+		object.put(JdbcConstants.USER, config.getUser());
+		object.put(JdbcConstants.DRIVER, config.getDriverName());
+		object.put(JdbcConstants.POOLABLE, config.isPoolable());
+		object.put(JdbcConstants.DEFAULT_TIMEOUT, config.getTimeout());
 		connection.setAttribute(JdbcConstants.CONFIGURATION, new Value(object));
 		connection.setPassword(config.getPassword());
 	}
