@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-	compile 'org.iot-dsa:dslink:0.10.1'
+	compile 'org.iot-dsa:dslink:0.10.2'
 	compile 'org.apache.commons:commons-lang3:3.3.2'
 	compile 'org.apache.commons:commons-dbcp2:2.1'
 	compile 'mysql:mysql-connector-java:5.1.35'
