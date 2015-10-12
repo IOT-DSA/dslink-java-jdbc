@@ -75,7 +75,8 @@ public class ActionProvider {
 
     public Action getUpdateAction(JdbcConfig config) {
         Action action = new Action(Permission.WRITE, new UpdateHandler(config));
-        action.addParameter(new Parameter(JdbcConstants.ROWS_UPDATED, ValueType.NUMBER));
+        action.addParameter(new Parameter(JdbcConstants.SQL, ValueType.STRING));
+        action.addResult(new Parameter(JdbcConstants.ROWS_UPDATED, ValueType.NUMBER));
         return action;
     }
 }
