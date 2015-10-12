@@ -1,9 +1,5 @@
 package org.dsa.iot.jdbc.provider;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.dsa.iot.dslink.DSLink;
 import org.dsa.iot.dslink.node.Node;
 import org.dsa.iot.dslink.node.NodeBuilder;
@@ -13,6 +9,10 @@ import org.dsa.iot.dslink.node.value.ValueType;
 import org.dsa.iot.dslink.util.json.JsonObject;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class JdbcProvider extends ActionProvider {
 
@@ -71,7 +71,7 @@ public class JdbcProvider extends ActionProvider {
 				builder.build();
 
 				builder = node.createChild(JdbcConstants.EDIT_CONNECTION);
-				builder.setAction(getEditConnectioAction(config));
+				builder.setAction(getEditConnectionAction(config));
 				builder.build();
 
 				builder = node.createChild(JdbcConstants.QUERY);

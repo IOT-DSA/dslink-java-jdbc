@@ -6,6 +6,7 @@ import org.dsa.iot.dslink.node.NodeManager;
 import org.dsa.iot.dslink.node.actions.ActionResult;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
+import org.dsa.iot.dslink.util.handler.Handler;
 import org.dsa.iot.dslink.util.json.JsonObject;
 import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.model.JdbcConfig;
@@ -13,7 +14,6 @@ import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.dsa.iot.jdbc.provider.ActionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dsa.iot.dslink.util.handler.Handler;
 
 public class AddConnectionHandler extends ActionProvider implements
 		Handler<ActionResult> {
@@ -105,13 +105,17 @@ public class AddConnectionHandler extends ActionProvider implements
 		builder.build();
 
 		builder = conn.createChild(JdbcConstants.EDIT_CONNECTION);
-		builder.setAction(getEditConnectioAction(config));
-		builder.build();
+        builder.setAction(getEditConnectionAction(config));
+        builder.build();
 		LOG.info("Connection {} created", conn.getName());
 
 		builder = conn.createChild(JdbcConstants.QUERY);
 		builder.setAction(getQueryAction(config));
 		builder.build();
+
+        builder = conn.createChild(JdbcConstants.UPDATE);
+        builder.setAction(getUpdateAction(config));
+        builder.build();
 
 		status.setValue(new Value("connection created"));
 	}

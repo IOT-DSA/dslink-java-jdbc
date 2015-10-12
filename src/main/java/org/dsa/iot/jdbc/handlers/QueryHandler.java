@@ -1,12 +1,5 @@
 package org.dsa.iot.jdbc.handlers;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.dsa.iot.dslink.methods.StreamState;
 import org.dsa.iot.dslink.node.actions.ActionResult;
 import org.dsa.iot.dslink.node.actions.Parameter;
@@ -14,12 +7,14 @@ import org.dsa.iot.dslink.node.actions.table.Row;
 import org.dsa.iot.dslink.node.actions.table.Table;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
+import org.dsa.iot.dslink.util.handler.Handler;
 import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dsa.iot.dslink.util.handler.Handler;
+
+import java.sql.*;
 
 public class QueryHandler implements Handler<ActionResult> {
 
@@ -42,13 +37,11 @@ public class QueryHandler implements Handler<ActionResult> {
 				&& !value.getString().isEmpty()) {
 
 			String sql = value.getString();
-			LOG.info(sql.toString());
+			LOG.info(sql);
 
 			try {
 				doQuery(sql, event);
-			} catch (SQLException e) {
-				setStatusMessage(e.getMessage());
-			} catch (ClassNotFoundException e) {
+			} catch (SQLException | ClassNotFoundException e) {
 				setStatusMessage(e.getMessage());
 			}
 		} else {
@@ -64,7 +57,7 @@ public class QueryHandler implements Handler<ActionResult> {
 
 		try {
 
-			LOG.info("start quering");
+			LOG.info("start querying");
 			stmt = connection.createStatement();
 
 			rSet = stmt.executeQuery(query);
@@ -89,12 +82,8 @@ public class QueryHandler implements Handler<ActionResult> {
                 size++;
 			}
 
-			StringBuilder builder = new StringBuilder();
-
-			builder.append("success: ").append("number of rows returned: ")
-					.append(size);
-
-			setStatusMessage(builder.toString());
+			String builder = "success: number of rows returned: " + size;
+			setStatusMessage(builder);
 			event.setStreamState(StreamState.CLOSED);
 			LOG.info("send data");
 		} catch (SQLException e) {
@@ -128,7 +117,7 @@ public class QueryHandler implements Handler<ActionResult> {
 	}
 
 	private Connection getConnection() throws SQLException {
-		Connection connection = null;
+		Connection connection;
 		if (config.isPoolable()) {
 			if (config.getDataSource() == null) {
 				config.setDataSource(JdbcConnectionHelper

@@ -11,6 +11,7 @@ public class JdbcConstants {
 	public static final String CONFIGURATION = "configuration";
 	public static final String DRIVER = "driver";
 	public static final String SQL = "sql";
+    public static final String ROWS_UPDATED = "rows updated";
 
 	// Statuses
 	public static final String STATUS = "status";
@@ -24,5 +25,6 @@ public class JdbcConstants {
 	public static final String DELETE_CONNECTION = "Delete";
 	public static final String CONFIGURE_CONNECTION = "Configure";
 	public static final String QUERY = "Query";
+    public static final String UPDATE = "Update";
 
 }

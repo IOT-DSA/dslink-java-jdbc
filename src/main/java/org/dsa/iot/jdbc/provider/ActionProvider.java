@@ -9,10 +9,7 @@ import org.dsa.iot.dslink.node.actions.ResultType;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
 import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
-import org.dsa.iot.jdbc.handlers.AddConnectionHandler;
-import org.dsa.iot.jdbc.handlers.DeleteConnectionHandler;
-import org.dsa.iot.jdbc.handlers.EditConnectionHandler;
-import org.dsa.iot.jdbc.handlers.QueryHandler;
+import org.dsa.iot.jdbc.handlers.*;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
 
@@ -23,8 +20,8 @@ public class ActionProvider {
                 new DeleteConnectionHandler(manager));
 	}
 
-	public Action getEditConnectioAction(JdbcConfig config) {
-		Action action = new Action(Permission.READ, new EditConnectionHandler(
+    public Action getEditConnectionAction(JdbcConfig config) {
+        Action action = new Action(Permission.READ, new EditConnectionHandler(
 				config));
 		action.addParameter(new Parameter(JdbcConstants.URL, ValueType.STRING,
 				new Value(config.getUrl())).setPlaceHolder("jdbc:mysql://127.0.0.1:3306"));
@@ -75,4 +72,10 @@ public class ActionProvider {
 		action.setResultType(ResultType.TABLE);
 		return action;
 	}
+
+    public Action getUpdateAction(JdbcConfig config) {
+        Action action = new Action(Permission.WRITE, new UpdateHandler(config));
+        action.addParameter(new Parameter(JdbcConstants.ROWS_UPDATED, ValueType.NUMBER));
+        return action;
+    }
 }

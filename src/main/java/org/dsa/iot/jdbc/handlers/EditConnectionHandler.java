@@ -3,6 +3,7 @@ package org.dsa.iot.jdbc.handlers;
 import org.dsa.iot.dslink.node.Node;
 import org.dsa.iot.dslink.node.actions.ActionResult;
 import org.dsa.iot.dslink.node.value.Value;
+import org.dsa.iot.dslink.util.handler.Handler;
 import org.dsa.iot.dslink.util.json.JsonObject;
 import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.model.JdbcConfig;
@@ -10,7 +11,6 @@ import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.dsa.iot.jdbc.provider.ActionProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dsa.iot.dslink.util.handler.Handler;
 
 public class EditConnectionHandler extends ActionProvider implements
 		Handler<ActionResult> {
@@ -69,7 +69,7 @@ public class EditConnectionHandler extends ActionProvider implements
 		LOG.info("New configuration is {}", config);
 
 		Node edit = event.getNode();
-		edit.setAction(getEditConnectioAction(config));
+		edit.setAction(getEditConnectionAction(config));
 
 		Node connection = config.getNode();
 
