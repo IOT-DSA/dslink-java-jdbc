@@ -78,6 +78,10 @@ public class JdbcProvider extends ActionProvider {
 				builder.setAction(getQueryAction(config));
 				builder.build();
 
+                builder = node.createChild(JdbcConstants.UPDATE);
+                builder.setAction(getUpdateAction(config));
+                builder.build();
+
 				Node status = node.createChild(JdbcConstants.STATUS).build();
 				status.setValue(new Value(JdbcConstants.READY));
 			}
