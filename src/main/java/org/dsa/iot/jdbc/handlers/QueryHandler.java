@@ -142,7 +142,7 @@ public class QueryHandler implements Handler<ActionResult> {
         if (e == null) {
             LOG.info(message);
         } else {
-            LOG.info(message, e);
+            LOG.warn(message, e);
         }
         config.getNode().getChild(JdbcConstants.STATUS)
 				.setValue(new Value(message));
