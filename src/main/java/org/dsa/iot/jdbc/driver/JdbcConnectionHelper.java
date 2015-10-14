@@ -1,13 +1,13 @@
 package org.dsa.iot.jdbc.driver;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.dsa.iot.jdbc.model.JdbcConfig;
+
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.commons.dbcp2.BasicDataSource;
-import org.dsa.iot.jdbc.model.JdbcConfig;
 
 public class JdbcConnectionHelper {
 	private static String[] cashedDriversName;
@@ -36,7 +36,7 @@ public class JdbcConnectionHelper {
 	public static String[] getRegisteredDrivers() {
 		if (cashedDriversName == null) {
 			Enumeration<Driver> drivers = DriverManager.getDrivers();
-			Set<String> set = new HashSet<String>();
+			Set<String> set = new HashSet<>();
 			while (drivers.hasMoreElements()) {
 				Driver driver = drivers.nextElement();
 				// skip MySQL fabric

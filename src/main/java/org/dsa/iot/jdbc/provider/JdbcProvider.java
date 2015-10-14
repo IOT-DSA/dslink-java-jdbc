@@ -10,7 +10,6 @@ import org.dsa.iot.dslink.util.json.JsonObject;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -18,9 +17,9 @@ public class JdbcProvider extends ActionProvider {
 
 	/**
 	 * Starts building Node's tree
-	 * 
-	 * @param link
-	 */
+	 *
+     * @param link link
+     */
 	public void run(DSLink link) {
 		NodeManager manager = link.getNodeManager();
 		Node superRoot = manager.getNode("/").getNode();
@@ -39,52 +38,50 @@ public class JdbcProvider extends ActionProvider {
 
 	/**
 	 * Initial actions assignment
-	 * 
-	 * @param superRoot
-	 * @param manager
-	 */
+     *
+     * @param superRoot root
+     * @param manager manager
+     */
 	private void configureActions(Node superRoot, NodeManager manager) {
 		Map<String, Node> childs = superRoot.getChildren();
 
-		for (Iterator<Entry<String, Node>> iterator = childs.entrySet()
-				.iterator(); iterator.hasNext();) {
-			Entry<String, Node> entry = iterator.next();
-			Node node = entry.getValue();
-			if (node.getAttribute(JdbcConstants.ACTION) != null
-					&& node.getAttribute(JdbcConstants.ACTION).getBool()) {
+        for (Entry<String, Node> entry : childs.entrySet()) {
+            Node node = entry.getValue();
+            if (node.getAttribute(JdbcConstants.ACTION) != null
+                    && node.getAttribute(JdbcConstants.ACTION).getBool()) {
 
-				JsonObject object = node.getAttribute(
-						JdbcConstants.CONFIGURATION).getMap();
-				JdbcConfig config = new JdbcConfig();
-				config.setName((String) object.get(JdbcConstants.NAME));
-				config.setUrl((String) object.get(JdbcConstants.URL));
-				config.setUser((String) object.get(JdbcConstants.USER));
-				config.setPassword(node.getPassword());
-				config.setPoolable((Boolean) object.get(JdbcConstants.POOLABLE));
-				config.setTimeout((Integer) object.get(JdbcConstants.DEFAULT_TIMEOUT));
-				config.setDriverName((String) object.get(JdbcConstants.DRIVER));
-				config.setNode(node);
+                JsonObject object = node.getAttribute(
+                        JdbcConstants.CONFIGURATION).getMap();
+                JdbcConfig config = new JdbcConfig();
+                config.setName((String) object.get(JdbcConstants.NAME));
+                config.setUrl((String) object.get(JdbcConstants.URL));
+                config.setUser((String) object.get(JdbcConstants.USER));
+                config.setPassword(node.getPassword());
+                config.setPoolable((Boolean) object.get(JdbcConstants.POOLABLE));
+                config.setTimeout((Integer) object.get(JdbcConstants.DEFAULT_TIMEOUT));
+                config.setDriverName((String) object.get(JdbcConstants.DRIVER));
+                config.setNode(node);
 
-				NodeBuilder builder = node
-						.createChild(JdbcConstants.DELETE_CONNECTION);
-				builder.setAction(getDeleteConnectionAction(manager));
-				builder.build();
+                NodeBuilder builder = node
+                        .createChild(JdbcConstants.DELETE_CONNECTION);
+                builder.setAction(getDeleteConnectionAction(manager));
+                builder.build();
 
-				builder = node.createChild(JdbcConstants.EDIT_CONNECTION);
-				builder.setAction(getEditConnectionAction(config));
-				builder.build();
+                builder = node.createChild(JdbcConstants.EDIT_CONNECTION);
+                builder.setAction(getEditConnectionAction(config));
+                builder.build();
 
-				builder = node.createChild(JdbcConstants.QUERY);
-				builder.setAction(getQueryAction(config));
-				builder.build();
+                builder = node.createChild(JdbcConstants.QUERY);
+                builder.setAction(getQueryAction(config));
+                builder.build();
 
                 builder = node.createChild(JdbcConstants.UPDATE);
                 builder.setAction(getUpdateAction(config));
                 builder.build();
 
-				Node status = node.createChild(JdbcConstants.STATUS).build();
-				status.setValue(new Value(JdbcConstants.READY));
-			}
-		}
-	}
+                Node status = node.createChild(JdbcConstants.STATUS).build();
+                status.setValue(new Value(JdbcConstants.READY));
+            }
+        }
+    }
 }

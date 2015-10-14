@@ -42,11 +42,11 @@ public class QueryHandler implements Handler<ActionResult> {
 			try {
 				doQuery(sql, event);
 			} catch (SQLException | ClassNotFoundException e) {
-				setStatusMessage(e.getMessage());
-			}
+                setStatusMessage(e.getMessage(), e);
+            }
 		} else {
-			setStatusMessage("sql is empty");
-		}
+            setStatusMessage("sql is empty", null);
+        }
 	}
 
 	private void doQuery(String query, ActionResult event) throws SQLException,
@@ -83,36 +83,37 @@ public class QueryHandler implements Handler<ActionResult> {
 			}
 
 			String builder = "success: number of rows returned: " + size;
-			setStatusMessage(builder);
-			event.setStreamState(StreamState.CLOSED);
+            setStatusMessage(builder, null);
+            event.setStreamState(StreamState.CLOSED);
 			LOG.info("send data");
 		} catch (SQLException e) {
-			setStatusMessage(e.getMessage());
-		} finally {
+            setStatusMessage(e.getMessage(), e);
+            e.printStackTrace();
+        } finally {
 			try {
 				if (rSet != null) {
 					rSet.close();
 					LOG.info("rSet.close()");
 				}
 			} catch (SQLException e) {
-				setStatusMessage(e.getMessage());
-			}
+                setStatusMessage(e.getMessage(), e);
+            }
 			try {
 				if (stmt != null) {
 					stmt.close();
 					LOG.info("stmt.close()");
 				}
 			} catch (SQLException e) {
-				setStatusMessage(e.getMessage());
-			}
+                setStatusMessage(e.getMessage(), e);
+            }
 			try {
 				if (connection != null) {
 					connection.close();
 					LOG.info("connection.close()");
 				}
 			} catch (SQLException e) {
-				setStatusMessage(e.getMessage());
-			}
+                setStatusMessage(e.getMessage(), e);
+            }
 		}
 	}
 
@@ -137,9 +138,13 @@ public class QueryHandler implements Handler<ActionResult> {
 		return connection;
 	}
 
-	private void setStatusMessage(String message) {
-		LOG.info(message);
-		config.getNode().getChild(JdbcConstants.STATUS)
+    private void setStatusMessage(String message, Exception e) {
+        if (e == null) {
+            LOG.info(message);
+        } else {
+            LOG.info(message, e);
+        }
+        config.getNode().getChild(JdbcConstants.STATUS)
 				.setValue(new Value(message));
 	}
 }

@@ -37,8 +37,7 @@ public class EditConnectionHandler extends ActionProvider implements
 		}
 
 		Value user = event.getParameter(JdbcConstants.USER, new Value(""));
-		Value password = event.getParameter(JdbcConstants.PASSWORD, new Value(
-				""));
+        Value password = event.getParameter(JdbcConstants.PASSWORD);
 
 		Value driver = event.getParameter(JdbcConstants.DRIVER, new Value(""));
 		if (driver.getString() == null || driver.getString().isEmpty()) {
@@ -53,8 +52,10 @@ public class EditConnectionHandler extends ActionProvider implements
 		LOG.info("Old configuration is {}", config);
 		config.setUrl(url.getString());
 		config.setUser(user.getString());
-		config.setPassword(password.getString().toCharArray());
-		config.setDriverName(driver.getString());
+        if (password != null) {
+            config.setPassword(password.getString().toCharArray());
+        }
+        config.setDriverName(driver.getString());
 		config.setPoolable(poolable.getBool());
 
 		// create DataSource if specified
