@@ -3,9 +3,9 @@ package org.dsa.iot.jdbc.handlers;
 import org.dsa.iot.dslink.node.Node;
 import org.dsa.iot.dslink.node.NodeManager;
 import org.dsa.iot.dslink.node.actions.ActionResult;
+import org.dsa.iot.dslink.util.handler.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.dsa.iot.dslink.util.handler.Handler;
 
 public class DeleteConnectionHandler implements Handler<ActionResult> {
 
@@ -20,10 +20,10 @@ public class DeleteConnectionHandler implements Handler<ActionResult> {
 
 	@Override
 	public void handle(ActionResult event) {
-		LOG.info("Entering delete connection handle");
+		LOG.debug("Entering delete connection handle");
 		Node parent = manager.getSuperRoot();
 		parent.removeChild(event.getNode().getParent());
-		LOG.info("Connection {} deleted", event.getNode().getParent().getName());
+		LOG.debug("Connection {} deleted", event.getNode().getParent().getName());
 	}
 
 }

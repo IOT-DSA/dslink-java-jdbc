@@ -26,7 +26,7 @@ public class EditConnectionHandler extends ActionProvider implements
 
 	@Override
 	public void handle(ActionResult event) {
-		LOG.info("Entering edit connection handle");
+		LOG.debug("Entering edit connection handle");
 
 		Node status = config.getNode().getChild(JdbcConstants.STATUS);
 
@@ -49,7 +49,7 @@ public class EditConnectionHandler extends ActionProvider implements
 				new Value(60));
 		Value poolable = event.getParameter(JdbcConstants.POOLABLE);
 
-		LOG.info("Old configuration is {}", config);
+		LOG.debug("Old configuration is {}", config);
 		config.setUrl(url.getString());
 		config.setUser(user.getString());
         if (password != null) {
@@ -67,7 +67,7 @@ public class EditConnectionHandler extends ActionProvider implements
 			config.setDataSource(null);
 		}
 
-		LOG.info("New configuration is {}", config);
+		LOG.debug("New configuration is {}", config);
 
 		Node edit = event.getNode();
 		edit.setAction(getEditConnectionAction(config));

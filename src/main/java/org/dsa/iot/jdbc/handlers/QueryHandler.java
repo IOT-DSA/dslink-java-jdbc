@@ -29,7 +29,7 @@ public class QueryHandler implements Handler<ActionResult> {
 
 	@Override
 	public void handle(ActionResult event) {
-		LOG.info("Entering query connection handle");
+		LOG.debug("Entering query connection handle");
 
 		Value value = event.getParameter(JdbcConstants.SQL);
 
@@ -37,7 +37,7 @@ public class QueryHandler implements Handler<ActionResult> {
 				&& !value.getString().isEmpty()) {
 
 			String sql = value.getString();
-			LOG.info(sql);
+			LOG.debug(sql);
 
 			try {
 				doQuery(sql, event);
@@ -57,7 +57,7 @@ public class QueryHandler implements Handler<ActionResult> {
 
 		try {
 
-			LOG.info("start querying");
+			LOG.debug("start querying");
 			stmt = connection.createStatement();
 
 			rSet = stmt.executeQuery(query);
@@ -85,7 +85,7 @@ public class QueryHandler implements Handler<ActionResult> {
 			String builder = "success: number of rows returned: " + size;
             setStatusMessage(builder, null);
             event.setStreamState(StreamState.CLOSED);
-			LOG.info("send data");
+			LOG.debug("send data");
 		} catch (SQLException e) {
             setStatusMessage(e.getMessage(), e);
             e.printStackTrace();
@@ -93,7 +93,7 @@ public class QueryHandler implements Handler<ActionResult> {
 			try {
 				if (rSet != null) {
 					rSet.close();
-					LOG.info("rSet.close()");
+					LOG.debug("rSet.close()");
 				}
 			} catch (SQLException e) {
                 setStatusMessage(e.getMessage(), e);
@@ -101,7 +101,7 @@ public class QueryHandler implements Handler<ActionResult> {
 			try {
 				if (stmt != null) {
 					stmt.close();
-					LOG.info("stmt.close()");
+					LOG.debug("stmt.close()");
 				}
 			} catch (SQLException e) {
                 setStatusMessage(e.getMessage(), e);
@@ -109,7 +109,7 @@ public class QueryHandler implements Handler<ActionResult> {
 			try {
 				if (connection != null) {
 					connection.close();
-					LOG.info("connection.close()");
+					LOG.debug("connection.close()");
 				}
 			} catch (SQLException e) {
                 setStatusMessage(e.getMessage(), e);
@@ -129,7 +129,7 @@ public class QueryHandler implements Handler<ActionResult> {
 			try {
 				Class.forName(config.getDriverName());
 			} catch (ClassNotFoundException e) {
-				LOG.info(e.getMessage());
+				LOG.debug(e.getMessage());
 			}
 
 			connection = DriverManager.getConnection(config.getUrl(),
@@ -140,8 +140,8 @@ public class QueryHandler implements Handler<ActionResult> {
 
     private void setStatusMessage(String message, Exception e) {
         if (e == null) {
-            LOG.info(message);
-        } else {
+			LOG.debug(message);
+		} else {
             LOG.warn(message, e);
         }
         config.getNode().getChild(JdbcConstants.STATUS)

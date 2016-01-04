@@ -29,7 +29,7 @@ public class AddConnectionHandler extends ActionProvider implements
 
 	@Override
 	public void handle(ActionResult event) {
-		LOG.info("Entering add connection handle");
+		LOG.debug("Entering add connection handle");
 
 		Value name = event.getParameter(JdbcConstants.NAME, new Value(""));
 		Node child = manager.getSuperRoot().getChild(name.getString());
@@ -73,7 +73,7 @@ public class AddConnectionHandler extends ActionProvider implements
 		config.setPoolable(poolable.getBool());
 		config.setTimeout((Integer) timeout.getNumber());
 		config.setDriverName(driver.getString());
-		LOG.info(config.toString());
+		LOG.debug(config.toString());
 
 		// create DataSource if specified
 		if (poolable.getBool()) {
@@ -107,7 +107,7 @@ public class AddConnectionHandler extends ActionProvider implements
 		builder = conn.createChild(JdbcConstants.EDIT_CONNECTION);
         builder.setAction(getEditConnectionAction(config));
         builder.build();
-		LOG.info("Connection {} created", conn.getName());
+		LOG.debug("Connection {} created", conn.getName());
 
 		builder = conn.createChild(JdbcConstants.QUERY);
 		builder.setAction(getQueryAction(config));

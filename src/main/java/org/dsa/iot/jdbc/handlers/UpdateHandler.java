@@ -33,7 +33,7 @@ public class UpdateHandler implements Handler<ActionResult> {
 
     @Override
     public void handle(ActionResult event) {
-        LOG.info("Entering query connection handle");
+        LOG.debug("Entering query connection handle");
 
         Value value = event.getParameter(JdbcConstants.SQL);
 
@@ -41,7 +41,7 @@ public class UpdateHandler implements Handler<ActionResult> {
                 && !value.getString().isEmpty()) {
 
             String sql = value.getString();
-            LOG.info(sql);
+            LOG.debug(sql);
 
             try {
                 doUpdate(sql, event);
@@ -58,7 +58,7 @@ public class UpdateHandler implements Handler<ActionResult> {
         Connection connection = getConnection();
         Statement stmt = null;
         try {
-            LOG.info("start update");
+            LOG.debug("start update");
             stmt = connection.createStatement();
 
             int updates = stmt.executeUpdate(query);
@@ -69,14 +69,14 @@ public class UpdateHandler implements Handler<ActionResult> {
             String builder = "success: number of rows updated: " + updates;
             setStatusMessage(builder);
             event.setStreamState(StreamState.CLOSED);
-            LOG.info("send data");
+            LOG.debug("send data");
         } catch (SQLException e) {
             setStatusMessage(e.getMessage());
         } finally {
             try {
                 if (stmt != null) {
                     stmt.close();
-                    LOG.info("stmt.close()");
+                    LOG.debug("stmt.close()");
                 }
             } catch (SQLException e) {
                 setStatusMessage(e.getMessage());
@@ -84,7 +84,7 @@ public class UpdateHandler implements Handler<ActionResult> {
             try {
                 if (connection != null) {
                     connection.close();
-                    LOG.info("connection.close()");
+                    LOG.debug("connection.close()");
                 }
             } catch (SQLException e) {
                 setStatusMessage(e.getMessage());
@@ -104,7 +104,7 @@ public class UpdateHandler implements Handler<ActionResult> {
             try {
                 Class.forName(config.getDriverName());
             } catch (ClassNotFoundException e) {
-                LOG.info(e.getMessage());
+                LOG.debug(e.getMessage());
             }
 
             connection = DriverManager.getConnection(config.getUrl(),
@@ -114,7 +114,7 @@ public class UpdateHandler implements Handler<ActionResult> {
     }
 
     private void setStatusMessage(String message) {
-        LOG.info(message);
+        LOG.debug(message);
         config.getNode().getChild(JdbcConstants.STATUS)
                 .setValue(new Value(message));
     }
