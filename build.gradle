@@ -1,6 +1,7 @@
 apply plugin: 'application'
 apply plugin: 'findbugs'
 apply plugin: 'java'
+apply plugin: 'idea'
 
 mainClassName = 'org.dsa.iot.jdbc.JdbcDslink'
 sourceCompatibility = 1.7
@@ -14,12 +15,29 @@ repositories {
     }
 }
 
+configurations {
+    provided
+}
+
+idea {
+    module {
+        scopes.PROVIDED.plus += [ configurations.provided ]
+    }
+}
+
 dependencies {
-	compile 'org.iot-dsa:dslink:0.12.0'
+    provided 'com.google.code.findbugs:annotations:3.0.0'
+
+	compile 'org.iot-dsa:dslink:0.13.0'
+    compile 'org.iot-dsa:commons:0.13.0'
 	compile 'org.apache.commons:commons-lang3:3.3.2'
 	compile 'org.apache.commons:commons-dbcp2:2.1'
 	compile 'mysql:mysql-connector-java:5.1.35'
 	compile 'org.postgresql:postgresql:9.4-1201-jdbc41'
+}
+
+compileJava {
+    sourceSets.main.compileClasspath += configurations.provided
 }
 
 run {

@@ -15,35 +15,35 @@ import java.util.Map.Entry;
 
 public class JdbcProvider extends ActionProvider {
 
-	/**
-	 * Starts building Node's tree
-	 *
+    /**
+     * Starts building Node's tree
+     *
      * @param link link
      */
-	public void run(DSLink link) {
-		NodeManager manager = link.getNodeManager();
-		Node superRoot = manager.getNode("/").getNode();
+    public void run(DSLink link) {
+        NodeManager manager = link.getNodeManager();
+        Node superRoot = manager.getNode("/").getNode();
 
-		Node status = superRoot.createChild(JdbcConstants.STATUS).build();
-		status.setValueType(ValueType.STRING);
-		status.setValue(new Value(JdbcConstants.READY));
+        Node status = superRoot.createChild(JdbcConstants.STATUS).build();
+        status.setValueType(ValueType.STRING);
+        status.setValue(new Value(JdbcConstants.READY));
 
-		NodeBuilder builder = superRoot
-				.createChild(JdbcConstants.ADD_CONNECTION_ACTION);
-		builder.setAction(getAddConnectionAction(manager));
-		builder.build();
+        NodeBuilder builder = superRoot
+                .createChild(JdbcConstants.ADD_CONNECTION_ACTION);
+        builder.setAction(getAddConnectionAction(manager));
+        builder.build();
 
-		configureActions(superRoot, manager);
-	}
+        configureActions(superRoot, manager);
+    }
 
-	/**
-	 * Initial actions assignment
+    /**
+     * Initial actions assignment
      *
      * @param superRoot root
-     * @param manager manager
+     * @param manager   manager
      */
-	private void configureActions(Node superRoot, NodeManager manager) {
-		Map<String, Node> childs = superRoot.getChildren();
+    private void configureActions(Node superRoot, NodeManager manager) {
+        Map<String, Node> childs = superRoot.getChildren();
 
         for (Entry<String, Node> entry : childs.entrySet()) {
             Node node = entry.getValue();
@@ -71,9 +71,16 @@ public class JdbcProvider extends ActionProvider {
                 builder.setAction(getEditConnectionAction(config));
                 builder.build();
 
-                builder = node.createChild(JdbcConstants.QUERY);
-                builder.setAction(getQueryAction(config));
-                builder.build();
+                {
+                    builder = node.createChild(JdbcConstants.QUERY);
+                    builder.setAction(getQueryAction(config));
+                    builder.build();
+                }
+                {
+                    builder = node.createChild(JdbcConstants.STREAMING_QUERY);
+                    builder.setAction(getStreamingQueryAction(config));
+                    builder.build();
+                }
 
                 builder = node.createChild(JdbcConstants.UPDATE);
                 builder.setAction(getUpdateAction(config));
