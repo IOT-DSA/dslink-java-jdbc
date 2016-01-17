@@ -11,6 +11,7 @@ import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
 import org.dsa.iot.dslink.util.Objects;
 import org.dsa.iot.dslink.util.handler.Handler;
+import org.dsa.iot.jdbc.JdbcDslink;
 import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
@@ -34,7 +35,7 @@ public class StreamQueryHandler implements Handler<ActionResult> {
     }
 
     @Override
-    public void handle(ActionResult event) {
+    public void handle(final ActionResult event) {
         LOG.debug("Entering query connection handle");
 
         Value value = event.getParameter(JdbcConstants.SQL);
@@ -42,14 +43,19 @@ public class StreamQueryHandler implements Handler<ActionResult> {
         if (value != null && value.getString() != null
                 && !value.getString().isEmpty()) {
 
-            String sql = value.getString();
+            final String sql = value.getString();
             LOG.debug(sql);
 
-            try {
-                doQuery(sql, event);
-            } catch (SQLException | ClassNotFoundException e) {
-                setStatusMessage(e.getMessage(), e);
-            }
+            JdbcDslink.getStpe().execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        doQuery(sql, event);
+                    } catch (SQLException | ClassNotFoundException e) {
+                        setStatusMessage(e.getMessage(), e);
+                    }
+                }
+            });
         } else {
             setStatusMessage("sql is empty", null);
         }

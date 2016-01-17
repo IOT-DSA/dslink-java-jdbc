@@ -8,6 +8,7 @@ import org.dsa.iot.dslink.node.actions.table.Table;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
 import org.dsa.iot.dslink.util.handler.Handler;
+import org.dsa.iot.jdbc.JdbcDslink;
 import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
@@ -18,133 +19,138 @@ import java.sql.*;
 
 public class QueryHandler implements Handler<ActionResult> {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(QueryHandler.class);
+    private static final Logger LOG = LoggerFactory
+            .getLogger(QueryHandler.class);
 
-	private JdbcConfig config;
+    private JdbcConfig config;
 
-	public QueryHandler(JdbcConfig config) {
-		this.config = config;
-	}
+    public QueryHandler(JdbcConfig config) {
+        this.config = config;
+    }
 
-	@Override
-	public void handle(ActionResult event) {
-		LOG.debug("Entering query connection handle");
+    @Override
+    public void handle(final ActionResult event) {
+        LOG.debug("Entering query connection handle");
 
-		Value value = event.getParameter(JdbcConstants.SQL);
+        Value value = event.getParameter(JdbcConstants.SQL);
 
-		if (value != null && value.getString() != null
-				&& !value.getString().isEmpty()) {
+        if (value != null && value.getString() != null
+                && !value.getString().isEmpty()) {
 
-			String sql = value.getString();
-			LOG.debug(sql);
+            final String sql = value.getString();
+            LOG.debug(sql);
 
-			try {
-				doQuery(sql, event);
-			} catch (SQLException | ClassNotFoundException e) {
-                setStatusMessage(e.getMessage(), e);
-            }
-		} else {
+            JdbcDslink.getStpe().execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        doQuery(sql, event);
+                    } catch (SQLException | ClassNotFoundException e) {
+                        setStatusMessage(e.getMessage(), e);
+                    }
+                }
+            });
+        } else {
             setStatusMessage("sql is empty", null);
         }
-	}
+    }
 
-	private void doQuery(String query, ActionResult event) throws SQLException,
-			ClassNotFoundException {
-		Connection connection = getConnection();
-		Statement stmt = null;
-		ResultSet rSet = null;
+    private void doQuery(String query, ActionResult event) throws SQLException,
+            ClassNotFoundException {
+        Connection connection = getConnection();
+        Statement stmt = null;
+        ResultSet rSet = null;
 
-		try {
+        try {
 
-			LOG.debug("start querying");
-			stmt = connection.createStatement();
+            LOG.debug("start querying");
+            stmt = connection.createStatement();
 
-			rSet = stmt.executeQuery(query);
+            rSet = stmt.executeQuery(query);
 
-			ResultSetMetaData meta = rSet.getMetaData();
-			int columnCount = meta.getColumnCount();
+            ResultSetMetaData meta = rSet.getMetaData();
+            int columnCount = meta.getColumnCount();
 
-			Table table = event.getTable();
-			for (int i = 1; i <= columnCount; i++) {
+            Table table = event.getTable();
+            for (int i = 1; i <= columnCount; i++) {
                 ValueType type = ValueType.STRING;
                 Parameter p = new Parameter(meta.getColumnName(i), type);
                 table.addColumn(p);
-			}
+            }
 
             int size = 0;
-			while (rSet.next()) {
-				Row row = new Row();
-				for (int i = 1; i <= columnCount; i++) {
+            while (rSet.next()) {
+                Row row = new Row();
+                for (int i = 1; i <= columnCount; i++) {
                     row.addValue(new Value(rSet.getString(i)));
-				}
+                }
                 table.addRow(row);
                 size++;
-			}
+            }
 
-			String builder = "success: number of rows returned: " + size;
+            String builder = "success: number of rows returned: " + size;
             setStatusMessage(builder, null);
             event.setStreamState(StreamState.CLOSED);
-			LOG.debug("send data");
-		} catch (SQLException e) {
+            LOG.debug("send data");
+        } catch (SQLException e) {
             setStatusMessage(e.getMessage(), e);
             e.printStackTrace();
         } finally {
-			try {
-				if (rSet != null) {
-					rSet.close();
-					LOG.debug("rSet.close()");
-				}
-			} catch (SQLException e) {
+            try {
+                if (rSet != null) {
+                    rSet.close();
+                    LOG.debug("rSet.close()");
+                }
+            } catch (SQLException e) {
                 setStatusMessage(e.getMessage(), e);
             }
-			try {
-				if (stmt != null) {
-					stmt.close();
-					LOG.debug("stmt.close()");
-				}
-			} catch (SQLException e) {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                    LOG.debug("stmt.close()");
+                }
+            } catch (SQLException e) {
                 setStatusMessage(e.getMessage(), e);
             }
-			try {
-				if (connection != null) {
-					connection.close();
-					LOG.debug("connection.close()");
-				}
-			} catch (SQLException e) {
+            try {
+                if (connection != null) {
+                    connection.close();
+                    LOG.debug("connection.close()");
+                }
+            } catch (SQLException e) {
                 setStatusMessage(e.getMessage(), e);
             }
-		}
-	}
+        }
+    }
 
-	private Connection getConnection() throws SQLException {
-		Connection connection;
-		if (config.isPoolable()) {
-			if (config.getDataSource() == null) {
-				config.setDataSource(JdbcConnectionHelper
-						.configureDataSource(config));
-			}
-			connection = config.getDataSource().getConnection();
-		} else {
-			try {
-				Class.forName(config.getDriverName());
-			} catch (ClassNotFoundException e) {
-				LOG.debug(e.getMessage());
-			}
+    private Connection getConnection() throws SQLException {
+        Connection connection;
+        if (config.isPoolable()) {
+            if (config.getDataSource() == null) {
+                config.setDataSource(JdbcConnectionHelper
+                        .configureDataSource(config));
+            }
+            connection = config.getDataSource().getConnection();
+        } else {
+            try {
+                Class.forName(config.getDriverName());
+            } catch (ClassNotFoundException e) {
+                LOG.debug(e.getMessage());
+            }
 
-			connection = DriverManager.getConnection(config.getUrl(),
-					config.getUser(), String.valueOf(config.getPassword()));
-		}
-		return connection;
-	}
+            connection = DriverManager.getConnection(config.getUrl(),
+                    config.getUser(), String.valueOf(config.getPassword()));
+        }
+        return connection;
+    }
 
     private void setStatusMessage(String message, Exception e) {
         if (e == null) {
-			LOG.debug(message);
-		} else {
+            LOG.debug(message);
+        } else {
             LOG.warn(message, e);
         }
         config.getNode().getChild(JdbcConstants.STATUS)
-				.setValue(new Value(message));
-	}
+                .setValue(new Value(message));
+    }
 }

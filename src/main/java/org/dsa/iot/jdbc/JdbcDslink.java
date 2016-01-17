@@ -3,6 +3,7 @@ package org.dsa.iot.jdbc;
 import org.dsa.iot.dslink.DSLink;
 import org.dsa.iot.dslink.DSLinkFactory;
 import org.dsa.iot.dslink.DSLinkHandler;
+import org.dsa.iot.dslink.util.Objects;
 import org.dsa.iot.jdbc.provider.JdbcProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -24,6 +26,7 @@ import java.util.zip.ZipInputStream;
 public class JdbcDslink extends DSLinkHandler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JdbcDslink.class);
+    private static final ScheduledThreadPoolExecutor stpe = Objects.createDaemonThreadPool();
 
     @Override
 	public boolean isResponder() {
@@ -99,11 +102,20 @@ public class JdbcDslink extends DSLinkHandler {
         }
     }
 
+    public static ScheduledThreadPoolExecutor getStpe() {
+        return stpe;
+    }
+
     @Override
     public void onResponderConnected(DSLink link) {
         LOG.info("JDBC DSLink started");
         JdbcProvider provider = new JdbcProvider();
         provider.run(link);
+    }
+
+    @Override
+    public void stop() {
+        stpe.shutdownNow();
     }
 
 	public static void main(String[] args) {
