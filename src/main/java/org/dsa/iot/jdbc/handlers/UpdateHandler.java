@@ -59,9 +59,12 @@ public class UpdateHandler implements Handler<ActionResult> {
         Statement stmt = null;
         try {
             LOG.debug("start update");
+
+            connection.setAutoCommit(false);
             stmt = connection.createStatement();
 
             int updates = stmt.executeUpdate(query);
+            connection.commit();
 
             Table table = event.getTable();
             table.addRow(Row.make(new Value(updates)));
