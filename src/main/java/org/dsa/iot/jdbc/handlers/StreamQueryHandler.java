@@ -9,8 +9,8 @@ import org.dsa.iot.dslink.node.actions.table.Row;
 import org.dsa.iot.dslink.node.actions.table.Table;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
+import org.dsa.iot.dslink.util.Objects;
 import org.dsa.iot.dslink.util.handler.Handler;
-import org.dsa.iot.jdbc.JdbcDslink;
 import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
@@ -105,7 +105,7 @@ public class StreamQueryHandler implements Handler<ActionResult> {
                 }
             });
 
-            JdbcDslink.getStpe().execute(new Runnable() {
+            Objects.getDaemonThreadPool().execute(new Runnable() {
 
                 boolean sentReady = false;
 
