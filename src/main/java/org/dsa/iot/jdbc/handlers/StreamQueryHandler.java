@@ -9,7 +9,6 @@ import org.dsa.iot.dslink.node.actions.table.Row;
 import org.dsa.iot.dslink.node.actions.table.Table;
 import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
-import org.dsa.iot.dslink.util.Objects;
 import org.dsa.iot.dslink.util.handler.Handler;
 import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.model.JdbcConfig;
@@ -98,14 +97,7 @@ public class StreamQueryHandler implements Handler<ActionResult> {
             event.setStreamState(StreamState.INITIALIZED);
 
             final Container<Boolean> running = new Container<>(true);
-            event.setCloseHandler(new Handler<Void>() {
-                @Override
-                public void handle(Void event) {
-                    running.setValue(false);
-                }
-            });
-
-            Objects.getDaemonThreadPool().execute(new Runnable() {
+            final Thread thread = new Thread(new Runnable() {
 
                 boolean sentReady = false;
 
@@ -115,41 +107,57 @@ public class StreamQueryHandler implements Handler<ActionResult> {
                         while (running.getValue()) {
                             rSet.setValue(stmt.executeQuery("FETCH NEXT FROM " + cursName));
                             int size = 0;
-                            while (running.getValue() && rSet.getValue().next()) {
-                                size++;
-                                Row row = new Row();
-                                for (int i = 1; i <= columnCount; i++) {
-                                    row.addValue(new Value(rSet.getValue().getString(i)));
+                            try {
+                                while (running.getValue() && rSet.getValue().next()) {
+                                    size++;
+                                    Row row = new Row();
+                                    for (int i = 1; i <= columnCount; i++) {
+                                        row.addValue(new Value(rSet.getValue().getString(i)));
+                                    }
+                                    if (!sentReady) {
+                                        table.sendReady();
+                                        sentReady = true;
+                                    }
+                                    table.addRow(row);
                                 }
-                                if (!sentReady) {
-                                    table.sendReady();
-                                    sentReady = true;
+                            } catch (SQLException e) {
+                                rSet.getValue().close();
+                                size = 0;
+                                throw e;
+                            } finally {
+                                if (size == 0) {
+                                    table.close();
                                 }
-                                table.addRow(row);
-                            }
-                            rSet.getValue().close();
-                            if (size == 0) {
-                                table.close();
                             }
                         }
                     } catch (SQLException e) {
                         e.printStackTrace();
                         table.close();
-                    } finally {
-                        try {
-                            stmt.execute("CLOSE " + cursName);
-                        } catch (SQLException ignored) {
-                        }
+                    }
+                }
+            });
 
-                        try {
-                            stmt.close();
-                        } catch (SQLException ignored) {
-                        }
+            thread.start();
+            event.setCloseHandler(new Handler<Void>() {
+                @Override
+                public void handle(Void event) {
+                    running.setValue(false);
+                    if (thread.isAlive()) {
+                        thread.stop();
+                    }
+                    try {
+                        stmt.execute("CLOSE " + cursName);
+                    } catch (SQLException ignored) {
+                    }
 
-                        try {
-                            connection.close();
-                        } catch (SQLException ignored) {
-                        }
+                    try {
+                        stmt.close();
+                    } catch (SQLException ignored) {
+                    }
+
+                    try {
+                        connection.close();
+                    } catch (SQLException ignored) {
                     }
                 }
             });
