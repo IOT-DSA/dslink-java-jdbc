@@ -102,27 +102,39 @@ public class AddConnectionHandler extends ActionProvider implements
 
         builder = conn.createChild(JdbcConstants.DELETE_CONNECTION);
         builder.setAction(getDeleteConnectionAction(manager));
+        builder.setSerializable(false);
         builder.build();
 
         builder = conn.createChild(JdbcConstants.EDIT_CONNECTION);
         builder.setAction(getEditConnectionAction(config));
+        builder.setSerializable(false);
         builder.build();
         LOG.debug("Connection {} created", conn.getName());
 
         {
             builder = conn.createChild(JdbcConstants.QUERY);
             builder.setAction(getQueryAction(config));
+            builder.setSerializable(false);
             builder.build();
         }
         {
             builder = conn.createChild(JdbcConstants.STREAMING_QUERY);
             builder.setAction(getStreamingQueryAction(config));
+            builder.setSerializable(false);
             builder.build();
         }
-
-        builder = conn.createChild(JdbcConstants.UPDATE);
-        builder.setAction(getUpdateAction(config));
-        builder.build();
+        if ("org.postgresql.Driver".equals(config.getDriverName())) {
+            builder = conn.createChild(JdbcConstants.COPY);
+            builder.setAction(getCopyAction(config));
+            builder.setSerializable(false);
+            builder.build();
+        }
+        {
+            builder = conn.createChild(JdbcConstants.UPDATE);
+            builder.setAction(getUpdateAction(config));
+            builder.setSerializable(false);
+            builder.build();
+        }
 
         status.setValue(new Value("connection created"));
     }

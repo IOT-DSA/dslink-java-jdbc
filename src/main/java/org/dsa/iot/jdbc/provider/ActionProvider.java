@@ -12,6 +12,7 @@ import org.dsa.iot.jdbc.driver.JdbcConnectionHelper;
 import org.dsa.iot.jdbc.handlers.*;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
+import org.dsa.iot.jdbc.postgres.PostgresCopyHandler;
 
 public class ActionProvider {
 
@@ -83,6 +84,18 @@ public class ActionProvider {
     public Action getUpdateAction(JdbcConfig config) {
         Action action = new Action(Permission.WRITE, new UpdateHandler(config));
         action.addParameter(new Parameter(JdbcConstants.SQL, ValueType.STRING));
+        action.addResult(new Parameter(JdbcConstants.ROWS_UPDATED, ValueType.NUMBER));
+        return action;
+    }
+
+    public Action getCopyAction(JdbcConfig config) {
+        Action action = new Action(Permission.WRITE, new PostgresCopyHandler(config));
+        action.addParameter(new Parameter(JdbcConstants.SQL, ValueType.STRING));
+        {
+            Parameter p = new Parameter(JdbcConstants.ROWS, ValueType.STRING);
+            p.setEditorType(EditorType.TEXT_AREA);
+            action.addParameter(p);
+        }
         action.addResult(new Parameter(JdbcConstants.ROWS_UPDATED, ValueType.NUMBER));
         return action;
     }

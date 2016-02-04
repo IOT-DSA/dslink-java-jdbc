@@ -11,6 +11,7 @@ public class JdbcConstants {
     public static final String CONFIGURATION = "configuration";
     public static final String DRIVER = "driver";
     public static final String SQL = "sql";
+    public static final String ROWS = "rows";
     public static final String ROWS_UPDATED = "rows updated";
 
     // Statuses
@@ -26,5 +27,8 @@ public class JdbcConstants {
     public static final String STREAMING_QUERY = "Streaming Query";
     public static final String QUERY = "Query";
     public static final String UPDATE = "Update";
+
+    // Postgres specific actions
+    public static final String COPY = "Copy";
 
 }

@@ -59,32 +59,45 @@ public class JdbcProvider extends ActionProvider {
                 config.setPassword(node.getPassword());
                 config.setPoolable((Boolean) object.get(JdbcConstants.POOLABLE));
                 config.setTimeout((Integer) object.get(JdbcConstants.DEFAULT_TIMEOUT));
-                config.setDriverName((String) object.get(JdbcConstants.DRIVER));
+                String driver = object.get(JdbcConstants.DRIVER);
+                config.setDriverName(driver);
                 config.setNode(node);
 
                 NodeBuilder builder = node
                         .createChild(JdbcConstants.DELETE_CONNECTION);
                 builder.setAction(getDeleteConnectionAction(manager));
+                builder.setSerializable(false);
                 builder.build();
 
                 builder = node.createChild(JdbcConstants.EDIT_CONNECTION);
                 builder.setAction(getEditConnectionAction(config));
+                builder.setSerializable(false);
                 builder.build();
 
                 {
                     builder = node.createChild(JdbcConstants.QUERY);
                     builder.setAction(getQueryAction(config));
+                    builder.setSerializable(false);
                     builder.build();
                 }
                 {
                     builder = node.createChild(JdbcConstants.STREAMING_QUERY);
                     builder.setAction(getStreamingQueryAction(config));
+                    builder.setSerializable(false);
                     builder.build();
                 }
-
-                builder = node.createChild(JdbcConstants.UPDATE);
-                builder.setAction(getUpdateAction(config));
-                builder.build();
+                if ("org.postgresql.Driver".equals(driver)) {
+                    builder = node.createChild(JdbcConstants.COPY);
+                    builder.setAction(getCopyAction(config));
+                    builder.setSerializable(false);
+                    builder.build();
+                }
+                {
+                    builder = node.createChild(JdbcConstants.UPDATE);
+                    builder.setAction(getUpdateAction(config));
+                    builder.setSerializable(false);
+                    builder.build();
+                }
 
                 Node status = node.createChild(JdbcConstants.STATUS).build();
                 status.setValue(new Value(JdbcConstants.READY));
