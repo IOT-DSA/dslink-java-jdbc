@@ -28,8 +28,8 @@ idea {
 dependencies {
     provided 'com.google.code.findbugs:annotations:3.0.0'
 
-	compile 'org.iot-dsa:dslink:0.13.0'
-    compile 'org.iot-dsa:commons:0.13.0'
+	compile 'org.iot-dsa:dslink:0.14.0'
+    compile 'org.iot-dsa:commons:0.14.0'
 	compile 'org.apache.commons:commons-lang3:3.3.2'
 	compile 'org.apache.commons:commons-dbcp2:2.1'
 	compile 'mysql:mysql-connector-java:5.1.35'
