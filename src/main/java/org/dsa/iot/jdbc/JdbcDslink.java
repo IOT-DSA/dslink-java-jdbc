@@ -17,16 +17,15 @@ import java.util.zip.ZipInputStream;
 
 /**
  * Dslink to work with JDBC
- * 
- * @author pshvets
  *
+ * @author pshvets
  */
 public class JdbcDslink extends DSLinkHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JdbcDslink.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcDslink.class);
 
     @Override
-	public boolean isResponder() {
+    public boolean isResponder() {
         return true;
     }
 
@@ -106,7 +105,7 @@ public class JdbcDslink extends DSLinkHandler {
         provider.run(link);
     }
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
         DSLinkFactory.start(args, new JdbcDslink());
-	}
+    }
 }

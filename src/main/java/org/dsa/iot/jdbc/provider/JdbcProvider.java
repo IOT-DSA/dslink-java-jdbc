@@ -86,12 +86,14 @@ public class JdbcProvider extends ActionProvider {
                     builder.setSerializable(false);
                     builder.build();
                 }
+
                 if ("org.postgresql.Driver".equals(driver)) {
                     builder = node.createChild(JdbcConstants.COPY);
                     builder.setAction(getCopyAction(config));
                     builder.setSerializable(false);
                     builder.build();
                 }
+
                 {
                     builder = node.createChild(JdbcConstants.UPDATE);
                     builder.setAction(getUpdateAction(config));

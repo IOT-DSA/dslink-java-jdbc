@@ -9,27 +9,25 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * 
  * Registers jdbc driver at runtime
- * 
- * @author pshvets
  *
+ * @author pshvets
  */
 public class JdbcDriverLoader {
-	public static void registerDriver(final URL url, String className)
-			throws InstantiationException, IllegalAccessException,
-			ClassNotFoundException, SQLException {
+    public static void registerDriver(final URL url, String className)
+            throws InstantiationException, IllegalAccessException,
+            ClassNotFoundException, SQLException {
 
-		URLClassLoader loader = AccessController
-				.doPrivileged(new PrivilegedAction<URLClassLoader>() {
-					@Override
-					public URLClassLoader run() {
-						return new URLClassLoader(new URL[] { url });
-					}
-				});
+        URLClassLoader loader = AccessController
+                .doPrivileged(new PrivilegedAction<URLClassLoader>() {
+                    @Override
+                    public URLClassLoader run() {
+                        return new URLClassLoader(new URL[]{url});
+                    }
+                });
 
-		Driver driver = (Driver) Class.forName(className, true, loader)
-				.newInstance();
-		DriverManager.registerDriver(new JdbcDriverHolder(driver));
-	}
+        Driver driver = (Driver) Class.forName(className, true, loader)
+                .newInstance();
+        DriverManager.registerDriver(new JdbcDriverHolder(driver));
+    }
 }
