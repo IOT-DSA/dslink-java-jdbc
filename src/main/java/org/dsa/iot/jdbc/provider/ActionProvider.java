@@ -69,14 +69,14 @@ public class ActionProvider {
 
     public Action getStreamingQueryAction(JdbcConfig config) {
         Action action = new Action(Permission.READ, new StreamQueryHandler(config));
-        action.addParameter(new Parameter(JdbcConstants.SQL, ValueType.STRING));
+        action.addParameter(new Parameter(JdbcConstants.SQL, ValueType.STRING).setEditorType(EditorType.TEXT_AREA));
         action.setResultType(ResultType.STREAM);
         return action;
     }
 
     public Action getQueryAction(JdbcConfig config) {
         Action action = new Action(Permission.READ, new QueryHandler(config));
-        action.addParameter(new Parameter(JdbcConstants.SQL, ValueType.STRING));
+        action.addParameter(new Parameter(JdbcConstants.SQL, ValueType.STRING).setEditorType(EditorType.TEXT_AREA));
         action.setResultType(ResultType.TABLE);
         return action;
     }
