@@ -56,14 +56,14 @@ tasks.withType(FindBugs) {
 applicationDistribution.from new File(project.projectDir, "/dslink.json")
 
 startScripts {
-    def configureClasspathVar = { findClasspath, pathSeparator, variable, line ->
+    def configureClasspathVar = { findClasspath, pathSeparator, slash, variable, line ->
         line = line.replaceAll(~/^${findClasspath}=.*$/) { original ->
-            original += "${pathSeparator}${variable}lib"
+            original += "${pathSeparator}${variable}lib${slash}*"
         }
     }
 
-    def configureUnixClasspath = configureClasspathVar.curry('CLASSPATH', ':', '\$APP_HOME/*')
-    def configureWindowsClasspath = configureClasspathVar.curry('set CLASSPATH', ';', '%APP_HOME%\\*')
+    def configureUnixClasspath = configureClasspathVar.curry('CLASSPATH', ':', '/', '\$APP_HOME/')
+    def configureWindowsClasspath = configureClasspathVar.curry('set CLASSPATH', ';', '\\', '%APP_HOME%\\')
 
     doLast {
         unixScript.text =
