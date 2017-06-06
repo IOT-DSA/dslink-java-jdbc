@@ -22,7 +22,7 @@ public class DeleteConnectionHandler implements Handler<ActionResult> {
     public void handle(ActionResult event) {
         LOG.debug("Entering delete connection handle");
         Node parent = manager.getSuperRoot();
-        parent.removeChild(event.getNode().getParent());
+        parent.removeChild(event.getNode().getParent(), true);
         LOG.debug("Connection {} deleted", event.getNode().getParent().getName());
     }
 

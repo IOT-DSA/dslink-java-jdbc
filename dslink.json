@@ -1,11 +1,10 @@
 {
   "name": "dslink-java-jdbc",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Java JDBC DSLink",
   "license": "Apache",
   "author": {
-    "name": "Petr Shvets",
-    "email": "p.shvets@dglogik.com"
+    "name": "Peter Shvets",
   },
   "main": "bin/dslink-java-jdbc",
   "repository": {

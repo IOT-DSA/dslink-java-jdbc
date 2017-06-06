@@ -1,6 +1,13 @@
 package org.dsa.iot.jdbc.handlers;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Random;
 import org.dsa.iot.commons.Container;
 import org.dsa.iot.dslink.methods.StreamState;
 import org.dsa.iot.dslink.node.actions.ActionResult;
@@ -17,10 +24,8 @@ import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
-import java.util.Random;
-
 public class StreamQueryHandler implements Handler<ActionResult> {
+
     private static final Logger LOG = LoggerFactory
             .getLogger(StreamQueryHandler.class);
 
@@ -171,7 +176,7 @@ public class StreamQueryHandler implements Handler<ActionResult> {
         if (config.isPoolable()) {
             if (config.getDataSource() == null) {
                 config.setDataSource(JdbcConnectionHelper
-                        .configureDataSource(config));
+                                             .configureDataSource(config));
             }
             connection = config.getDataSource().getConnection();
         } else {
@@ -182,7 +187,8 @@ public class StreamQueryHandler implements Handler<ActionResult> {
             }
 
             connection = DriverManager.getConnection(config.getUrl(),
-                    config.getUser(), String.valueOf(config.getPassword()));
+                                                     config.getUser(),
+                                                     String.valueOf(config.getPassword()));
         }
         return connection;
     }
@@ -193,14 +199,15 @@ public class StreamQueryHandler implements Handler<ActionResult> {
         } else {
             LOG.warn(message, e);
         }
-        config.getNode().getChild(JdbcConstants.STATUS)
-                .setValue(new Value(message));
+        config.getNode().getChild(JdbcConstants.STATUS, false)
+              .setValue(new Value(message));
     }
 
     private static String randomCursorName() {
         char[] buf = new char[8];
-        for (int i = 0; i < buf.length; ++i)
+        for (int i = 0; i < buf.length; ++i) {
             buf[i] = ALPHA_CHARS[RANDOM.nextInt(ALPHA_CHARS.length)];
+        }
         return new String(buf);
     }
 
