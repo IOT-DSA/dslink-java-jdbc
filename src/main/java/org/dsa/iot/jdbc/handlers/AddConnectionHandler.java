@@ -96,41 +96,41 @@ public class AddConnectionHandler extends ActionProvider implements
         Node conn = builder.build();
         config.setNode(conn);
 
-        Node connStatus = conn.createChild(JdbcConstants.STATUS, true).build();
+        Node connStatus = conn.createChild(JdbcConstants.STATUS, false).build();
         connStatus.setValueType(ValueType.STRING);
         connStatus.setValue(new Value(JdbcConstants.CREATED));
 
-        builder = conn.createChild(JdbcConstants.DELETE_CONNECTION, true);
+        builder = conn.createChild(JdbcConstants.DELETE_CONNECTION, false);
         builder.setAction(getDeleteConnectionAction(manager));
         builder.setSerializable(false);
         builder.build();
 
-        builder = conn.createChild(JdbcConstants.EDIT_CONNECTION, true);
+        builder = conn.createChild(JdbcConstants.EDIT_CONNECTION, false);
         builder.setAction(getEditConnectionAction(config));
         builder.setSerializable(false);
         builder.build();
         LOG.debug("Connection {} created", conn.getName());
 
         {
-            builder = conn.createChild(JdbcConstants.QUERY, true);
+            builder = conn.createChild(JdbcConstants.QUERY, false);
             builder.setAction(getQueryAction(config));
             builder.setSerializable(false);
             builder.build();
         }
         {
-            builder = conn.createChild(JdbcConstants.STREAMING_QUERY, true);
+            builder = conn.createChild(JdbcConstants.STREAMING_QUERY, false);
             builder.setAction(getStreamingQueryAction(config));
             builder.setSerializable(false);
             builder.build();
         }
         if ("org.postgresql.Driver".equals(config.getDriverName())) {
-            builder = conn.createChild(JdbcConstants.COPY, true);
+            builder = conn.createChild(JdbcConstants.COPY, false);
             builder.setAction(getCopyAction(config));
             builder.setSerializable(false);
             builder.build();
         }
         {
-            builder = conn.createChild(JdbcConstants.UPDATE, true);
+            builder = conn.createChild(JdbcConstants.UPDATE, false);
             builder.setAction(getUpdateAction(config));
             builder.setSerializable(false);
             builder.build();

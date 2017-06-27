@@ -23,12 +23,12 @@ public class JdbcProvider extends ActionProvider {
         NodeManager manager = link.getNodeManager();
         Node superRoot = manager.getNode("/").getNode();
 
-        Node status = superRoot.createChild(JdbcConstants.STATUS, true).build();
+        Node status = superRoot.createChild(JdbcConstants.STATUS, false).build();
         status.setValueType(ValueType.STRING);
         status.setValue(new Value(JdbcConstants.READY));
 
         NodeBuilder builder = superRoot
-                .createChild(JdbcConstants.ADD_CONNECTION_ACTION, true);
+                .createChild(JdbcConstants.ADD_CONNECTION_ACTION, false);
         builder.setAction(getAddConnectionAction(manager));
         builder.build();
 
@@ -63,44 +63,44 @@ public class JdbcProvider extends ActionProvider {
                 config.setNode(node);
 
                 NodeBuilder builder = node
-                        .createChild(JdbcConstants.DELETE_CONNECTION, true);
+                        .createChild(JdbcConstants.DELETE_CONNECTION, false);
                 builder.setAction(getDeleteConnectionAction(manager));
                 builder.setSerializable(false);
                 builder.build();
 
-                builder = node.createChild(JdbcConstants.EDIT_CONNECTION, true);
+                builder = node.createChild(JdbcConstants.EDIT_CONNECTION, false);
                 builder.setAction(getEditConnectionAction(config));
                 builder.setSerializable(false);
                 builder.build();
 
                 {
-                    builder = node.createChild(JdbcConstants.QUERY, true);
+                    builder = node.createChild(JdbcConstants.QUERY, false);
                     builder.setAction(getQueryAction(config));
                     builder.setSerializable(false);
                     builder.build();
                 }
                 {
-                    builder = node.createChild(JdbcConstants.STREAMING_QUERY, true);
+                    builder = node.createChild(JdbcConstants.STREAMING_QUERY, false);
                     builder.setAction(getStreamingQueryAction(config));
                     builder.setSerializable(false);
                     builder.build();
                 }
 
                 if ("org.postgresql.Driver".equals(driver)) {
-                    builder = node.createChild(JdbcConstants.COPY, true);
+                    builder = node.createChild(JdbcConstants.COPY, false);
                     builder.setAction(getCopyAction(config));
                     builder.setSerializable(false);
                     builder.build();
                 }
 
                 {
-                    builder = node.createChild(JdbcConstants.UPDATE, true);
+                    builder = node.createChild(JdbcConstants.UPDATE, false);
                     builder.setAction(getUpdateAction(config));
                     builder.setSerializable(false);
                     builder.build();
                 }
 
-                Node status = node.createChild(JdbcConstants.STATUS, true).build();
+                Node status = node.createChild(JdbcConstants.STATUS, false).build();
                 status.setValue(new Value(JdbcConstants.READY));
             }
         }
