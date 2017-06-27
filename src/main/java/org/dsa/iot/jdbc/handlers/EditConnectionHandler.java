@@ -29,7 +29,7 @@ public class EditConnectionHandler extends ActionProvider implements
     public void handle(ActionResult event) {
         LOG.debug("Entering edit connection handle");
 
-        Node status = config.getNode().getChild(JdbcConstants.STATUS);
+        Node status = config.getNode().getChild(JdbcConstants.STATUS, false);
 
         Value url = event.getParameter(JdbcConstants.URL, new Value(""));
         if (url.getString() == null || url.getString().isEmpty()) {
@@ -46,17 +46,17 @@ public class EditConnectionHandler extends ActionProvider implements
             return;
         } else {
             if ("org.postgresql.Driver".equals(driver.getString())) {
-                NodeBuilder builder = config.getNode().createChild(JdbcConstants.COPY);
+                NodeBuilder builder = config.getNode().createChild(JdbcConstants.COPY, false);
                 builder.setAction(getCopyAction(config));
                 builder.setSerializable(false);
                 builder.build();
             } else {
-                config.getNode().removeChild(JdbcConstants.COPY);
+                config.getNode().removeChild(JdbcConstants.COPY, false);
             }
         }
 
         Value timeout = event.getParameter(JdbcConstants.DEFAULT_TIMEOUT,
-                new Value(60));
+                                           new Value(60));
         Value poolable = event.getParameter(JdbcConstants.POOLABLE);
 
         LOG.debug("Old configuration is {}", config);
@@ -72,7 +72,7 @@ public class EditConnectionHandler extends ActionProvider implements
         config.setTimeout((Integer) timeout.getNumber());
         if (poolable.getBool()) {
             config.setDataSource(JdbcConnectionHelper
-                    .configureDataSource(config));
+                                         .configureDataSource(config));
         } else {
             config.setDataSource(null);
         }

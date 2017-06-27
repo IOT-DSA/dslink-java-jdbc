@@ -1,5 +1,7 @@
 package org.dsa.iot.jdbc.provider;
 
+import java.util.Map;
+import java.util.Map.Entry;
 import org.dsa.iot.dslink.DSLink;
 import org.dsa.iot.dslink.node.Node;
 import org.dsa.iot.dslink.node.NodeBuilder;
@@ -9,9 +11,6 @@ import org.dsa.iot.dslink.node.value.ValueType;
 import org.dsa.iot.dslink.util.json.JsonObject;
 import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
-
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class JdbcProvider extends ActionProvider {
 
@@ -24,12 +23,12 @@ public class JdbcProvider extends ActionProvider {
         NodeManager manager = link.getNodeManager();
         Node superRoot = manager.getNode("/").getNode();
 
-        Node status = superRoot.createChild(JdbcConstants.STATUS).build();
+        Node status = superRoot.createChild(JdbcConstants.STATUS, false).build();
         status.setValueType(ValueType.STRING);
         status.setValue(new Value(JdbcConstants.READY));
 
         NodeBuilder builder = superRoot
-                .createChild(JdbcConstants.ADD_CONNECTION_ACTION);
+                .createChild(JdbcConstants.ADD_CONNECTION_ACTION, false);
         builder.setAction(getAddConnectionAction(manager));
         builder.build();
 
@@ -64,44 +63,44 @@ public class JdbcProvider extends ActionProvider {
                 config.setNode(node);
 
                 NodeBuilder builder = node
-                        .createChild(JdbcConstants.DELETE_CONNECTION);
+                        .createChild(JdbcConstants.DELETE_CONNECTION, false);
                 builder.setAction(getDeleteConnectionAction(manager));
                 builder.setSerializable(false);
                 builder.build();
 
-                builder = node.createChild(JdbcConstants.EDIT_CONNECTION);
+                builder = node.createChild(JdbcConstants.EDIT_CONNECTION, false);
                 builder.setAction(getEditConnectionAction(config));
                 builder.setSerializable(false);
                 builder.build();
 
                 {
-                    builder = node.createChild(JdbcConstants.QUERY);
+                    builder = node.createChild(JdbcConstants.QUERY, false);
                     builder.setAction(getQueryAction(config));
                     builder.setSerializable(false);
                     builder.build();
                 }
                 {
-                    builder = node.createChild(JdbcConstants.STREAMING_QUERY);
+                    builder = node.createChild(JdbcConstants.STREAMING_QUERY, false);
                     builder.setAction(getStreamingQueryAction(config));
                     builder.setSerializable(false);
                     builder.build();
                 }
 
                 if ("org.postgresql.Driver".equals(driver)) {
-                    builder = node.createChild(JdbcConstants.COPY);
+                    builder = node.createChild(JdbcConstants.COPY, false);
                     builder.setAction(getCopyAction(config));
                     builder.setSerializable(false);
                     builder.build();
                 }
 
                 {
-                    builder = node.createChild(JdbcConstants.UPDATE);
+                    builder = node.createChild(JdbcConstants.UPDATE, false);
                     builder.setAction(getUpdateAction(config));
                     builder.setSerializable(false);
                     builder.build();
                 }
 
-                Node status = node.createChild(JdbcConstants.STATUS).build();
+                Node status = node.createChild(JdbcConstants.STATUS, false).build();
                 status.setValue(new Value(JdbcConstants.READY));
             }
         }

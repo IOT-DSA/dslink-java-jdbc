@@ -32,12 +32,12 @@ public class AddConnectionHandler extends ActionProvider implements
         LOG.debug("Entering add connection handle");
 
         Value name = event.getParameter(JdbcConstants.NAME, new Value(""));
-        Node child = manager.getSuperRoot().getChild(name.getString());
-        Node status = manager.getSuperRoot().getChild(JdbcConstants.STATUS);
+        Node child = manager.getSuperRoot().getChild(name.getString(), false);
+        Node status = manager.getSuperRoot().getChild(JdbcConstants.STATUS, false);
         if (name.getString() != null && !name.getString().isEmpty()) {
             if (child != null) {
                 status.setValue(new Value("connection with name "
-                        + name.getString() + " alredy exist"));
+                                                  + name.getString() + " alredy exist"));
                 return;
             }
         } else {
@@ -62,7 +62,7 @@ public class AddConnectionHandler extends ActionProvider implements
         }
 
         Value timeout = event.getParameter(JdbcConstants.DEFAULT_TIMEOUT,
-                new Value(60));
+                                           new Value(60));
         Value poolable = event.getParameter(JdbcConstants.POOLABLE);
 
         JdbcConfig config = new JdbcConfig();
@@ -78,7 +78,7 @@ public class AddConnectionHandler extends ActionProvider implements
         // create DataSource if specified
         if (poolable.getBool()) {
             config.setDataSource(JdbcConnectionHelper
-                    .configureDataSource(config));
+                                         .configureDataSource(config));
         }
 
         JsonObject object = new JsonObject();
@@ -96,41 +96,41 @@ public class AddConnectionHandler extends ActionProvider implements
         Node conn = builder.build();
         config.setNode(conn);
 
-        Node connStatus = conn.createChild(JdbcConstants.STATUS).build();
+        Node connStatus = conn.createChild(JdbcConstants.STATUS, false).build();
         connStatus.setValueType(ValueType.STRING);
         connStatus.setValue(new Value(JdbcConstants.CREATED));
 
-        builder = conn.createChild(JdbcConstants.DELETE_CONNECTION);
+        builder = conn.createChild(JdbcConstants.DELETE_CONNECTION, false);
         builder.setAction(getDeleteConnectionAction(manager));
         builder.setSerializable(false);
         builder.build();
 
-        builder = conn.createChild(JdbcConstants.EDIT_CONNECTION);
+        builder = conn.createChild(JdbcConstants.EDIT_CONNECTION, false);
         builder.setAction(getEditConnectionAction(config));
         builder.setSerializable(false);
         builder.build();
         LOG.debug("Connection {} created", conn.getName());
 
         {
-            builder = conn.createChild(JdbcConstants.QUERY);
+            builder = conn.createChild(JdbcConstants.QUERY, false);
             builder.setAction(getQueryAction(config));
             builder.setSerializable(false);
             builder.build();
         }
         {
-            builder = conn.createChild(JdbcConstants.STREAMING_QUERY);
+            builder = conn.createChild(JdbcConstants.STREAMING_QUERY, false);
             builder.setAction(getStreamingQueryAction(config));
             builder.setSerializable(false);
             builder.build();
         }
         if ("org.postgresql.Driver".equals(config.getDriverName())) {
-            builder = conn.createChild(JdbcConstants.COPY);
+            builder = conn.createChild(JdbcConstants.COPY, false);
             builder.setAction(getCopyAction(config));
             builder.setSerializable(false);
             builder.build();
         }
         {
-            builder = conn.createChild(JdbcConstants.UPDATE);
+            builder = conn.createChild(JdbcConstants.UPDATE, false);
             builder.setAction(getUpdateAction(config));
             builder.setSerializable(false);
             builder.build();

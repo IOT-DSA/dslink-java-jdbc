@@ -1,5 +1,10 @@
 package org.dsa.iot.jdbc.postgres;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import org.apache.commons.dbcp2.DelegatingConnection;
 import org.dsa.iot.dslink.methods.StreamState;
 import org.dsa.iot.dslink.node.actions.ActionResult;
@@ -15,12 +20,6 @@ import org.postgresql.PGConnection;
 import org.postgresql.copy.CopyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 /**
  * @author Samuel Grenier
@@ -110,7 +109,7 @@ public class PostgresCopyHandler implements Handler<ActionResult> {
         if (config.isPoolable()) {
             if (config.getDataSource() == null) {
                 config.setDataSource(JdbcConnectionHelper
-                        .configureDataSource(config));
+                                             .configureDataSource(config));
             }
             connection = config.getDataSource().getConnection();
         } else {
@@ -121,14 +120,15 @@ public class PostgresCopyHandler implements Handler<ActionResult> {
             }
 
             connection = DriverManager.getConnection(config.getUrl(),
-                    config.getUser(), String.valueOf(config.getPassword()));
+                                                     config.getUser(),
+                                                     String.valueOf(config.getPassword()));
         }
         return connection;
     }
 
     private void setStatusMessage(String message) {
         LOG.debug(message);
-        config.getNode().getChild(JdbcConstants.STATUS)
-                .setValue(new Value(message));
+        config.getNode().getChild(JdbcConstants.STATUS, false)
+              .setValue(new Value(message));
     }
 }

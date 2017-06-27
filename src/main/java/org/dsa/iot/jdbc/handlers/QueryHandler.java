@@ -1,5 +1,11 @@
 package org.dsa.iot.jdbc.handlers;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import org.dsa.iot.dslink.methods.StreamState;
 import org.dsa.iot.dslink.node.actions.ActionResult;
 import org.dsa.iot.dslink.node.actions.Parameter;
@@ -13,8 +19,6 @@ import org.dsa.iot.jdbc.model.JdbcConfig;
 import org.dsa.iot.jdbc.model.JdbcConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.*;
 
 public class QueryHandler implements Handler<ActionResult> {
 
@@ -122,7 +126,7 @@ public class QueryHandler implements Handler<ActionResult> {
         if (config.isPoolable()) {
             if (config.getDataSource() == null) {
                 config.setDataSource(JdbcConnectionHelper
-                        .configureDataSource(config));
+                                             .configureDataSource(config));
             }
             connection = config.getDataSource().getConnection();
         } else {
@@ -133,7 +137,8 @@ public class QueryHandler implements Handler<ActionResult> {
             }
 
             connection = DriverManager.getConnection(config.getUrl(),
-                    config.getUser(), String.valueOf(config.getPassword()));
+                                                     config.getUser(),
+                                                     String.valueOf(config.getPassword()));
         }
         return connection;
     }
@@ -144,7 +149,7 @@ public class QueryHandler implements Handler<ActionResult> {
         } else {
             LOG.warn(message, e);
         }
-        config.getNode().getChild(JdbcConstants.STATUS)
-                .setValue(new Value(message));
+        config.getNode().getChild(JdbcConstants.STATUS, false)
+              .setValue(new Value(message));
     }
 }
