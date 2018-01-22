@@ -6,7 +6,7 @@ apply plugin: 'idea'
 mainClassName = 'org.dsa.iot.jdbc.JdbcDslink'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-version = '0.1.0-SNAPSHOT'
+version = '0.1.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -31,8 +31,8 @@ wrapper {
 
 dependencies {
     provided 'com.google.code.findbugs:annotations:3.0.0'
-    compile 'org.iot-dsa:dslink:0.18.0'
-    compile 'org.iot-dsa:commons:0.18.0'
+    compile 'org.iot-dsa:dslink:0.18.3'
+    compile 'org.iot-dsa:commons:0.18.3'
     compile 'org.apache.commons:commons-lang3:3.4'
     compile 'org.apache.commons:commons-dbcp2:2.1.1'
     compile 'mysql:mysql-connector-java:6.0.4'
