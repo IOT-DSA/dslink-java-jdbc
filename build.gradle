@@ -1,12 +1,11 @@
 apply plugin: 'application'
 apply plugin: 'findbugs'
-apply plugin: 'java'
-apply plugin: 'idea'
+apply plugin: 'java-library'
 
 mainClassName = 'org.dsa.iot.jdbc.JdbcDslink'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-version = '0.1.1-SNAPSHOT'
+version = '0.2.0'
 
 repositories {
     mavenCentral()
@@ -15,34 +14,20 @@ repositories {
     }
 }
 
-configurations {
-    provided
-}
-
-idea {
-    module {
-        scopes.PROVIDED.plus += [ configurations.provided ]
-    }
-}
-
 wrapper {
-    gradleVersion = '4.0'
+    gradleVersion = '4.10'
 }
 
 dependencies {
-    provided 'com.google.code.findbugs:annotations:3.0.0'
-    compile 'org.iot-dsa:dslink:0.18.5'
-    compile 'org.iot-dsa:commons:0.18.5'
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'org.apache.commons:commons-dbcp2:2.1.1'
-    compile 'mysql:mysql-connector-java:6.0.4'
-    compile 'org.postgresql:postgresql:9.4-1206-jdbc41'
-    compile 'com.h2database:h2:1.4.192'
-    compile 'org.apache.commons:commons-pool2:2.4.2'
-}
-
-compileJava {
-    sourceSets.main.compileClasspath += configurations.provided
+    compileOnly 'com.google.code.findbugs:annotations:[3.0.1,)'
+    implementation 'com.h2database:h2:1.4.197'
+    implementation 'org.apache.commons:commons-dbcp2:2.5.0'
+    implementation 'org.apache.commons:commons-lang3:3.8'
+    implementation 'org.apache.commons:commons-pool2:2.6.0'
+    implementation 'org.postgresql:postgresql:42.2.4.jre7'
+    implementation 'mysql:mysql-connector-java:6.0.6'
+    api 'org.iot-dsa:dslink:0.20.1'
+    api 'org.iot-dsa:commons:0.20.1'
 }
 
 run {
