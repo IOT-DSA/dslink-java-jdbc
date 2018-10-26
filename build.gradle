@@ -15,14 +15,14 @@ repositories {
 }
 
 wrapper {
-    gradleVersion = '4.10'
+    gradleVersion = '4.10.2'
 }
 
 dependencies {
     compileOnly 'com.google.code.findbugs:annotations:[3.0.1,)'
     implementation 'com.h2database:h2:1.4.197'
     implementation 'org.apache.commons:commons-dbcp2:2.5.0'
-    implementation 'org.apache.commons:commons-lang3:3.8'
+    implementation 'org.apache.commons:commons-lang3:3.8.1'
     implementation 'org.apache.commons:commons-pool2:2.6.0'
     implementation 'org.postgresql:postgresql:42.2.5.jre7'
     implementation 'mysql:mysql-connector-java:6.0.6'
