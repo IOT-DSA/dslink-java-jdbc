@@ -96,7 +96,7 @@ public class StreamQueryHandler implements Handler<ActionResult> {
             try {
                 rSet.getValue().close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                LOG.error("", e);
             }
 
             table.setMode(Table.Mode.STREAM);
@@ -138,7 +138,7 @@ public class StreamQueryHandler implements Handler<ActionResult> {
                             }
                         }
                     } catch (SQLException e) {
-                        e.printStackTrace();
+                        LOG.error("", e);
                         table.close();
                     } finally {
                         try {
@@ -160,7 +160,6 @@ public class StreamQueryHandler implements Handler<ActionResult> {
             });
         } catch (SQLException e) {
             setStatusMessage(e.getMessage(), e);
-            e.printStackTrace();
         } finally {
             if (rSet.getValue() != null) {
                 try {

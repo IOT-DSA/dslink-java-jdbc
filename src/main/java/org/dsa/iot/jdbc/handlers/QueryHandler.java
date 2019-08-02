@@ -91,8 +91,11 @@ public class QueryHandler implements Handler<ActionResult> {
             event.setStreamState(StreamState.CLOSED);
             LOG.debug("send data");
         } catch (SQLException e) {
-            setStatusMessage(e.getMessage(), e);
-            e.printStackTrace();
+            String msg = e.getMessage();
+            if (msg.contains("No results were returned by the query")) {
+                LOG.warn("No results were returned by the query. For queries that shouldn't return results, use the Update action instead");
+            }
+            setStatusMessage(msg, e);
         } finally {
             try {
                 if (rSet != null) {

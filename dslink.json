@@ -1,6 +1,6 @@
 {
   "name": "dslink-java-jdbc",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Java JDBC DSLink",
   "license": "Apache",
   "author": {
