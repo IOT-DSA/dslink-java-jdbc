@@ -1,18 +1,17 @@
-import groovy.json.JsonSlurper
-
 apply plugin: 'application'
 apply plugin: 'findbugs'
 apply plugin: 'java'
 
-mainClassName = 'org.dsa.iot.jdbc.JdbcDslink'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
-
+import groovy.json.JsonSlurper
 build { //Update version in dslink.json
     def inputFile = file('dslink.json')
     def json = new JsonSlurper().parseText(inputFile.text)
     version = json.version
 }
+
+mainClassName = 'org.dsa.iot.jdbc.JdbcDslink'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
     mavenLocal()
@@ -20,7 +19,7 @@ repositories {
 }
 
 wrapper {
-    gradleVersion = '5.4'
+    gradleVersion = '5.5.1'
 }
 
 dependencies {
@@ -29,10 +28,10 @@ dependencies {
     implementation 'org.apache.commons:commons-dbcp2:2.6.0'
     implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'org.apache.commons:commons-pool2:2.6.2'
-    implementation 'org.postgresql:postgresql:42.2.5.jre7'
+    implementation 'org.postgresql:postgresql:42.2.6.jre7'
     implementation 'mysql:mysql-connector-java:6.0.6'
-    implementation 'org.iot-dsa:dslink:0.21.1'
-    implementation 'org.iot-dsa:commons:0.21.1'
+    implementation 'org.iot-dsa:dslink:0.22.0'
+    implementation 'org.iot-dsa:commons:0.22.0'
 }
 
 run {
