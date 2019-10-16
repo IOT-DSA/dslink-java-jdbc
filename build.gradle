@@ -19,19 +19,19 @@ repositories {
 }
 
 wrapper {
-    gradleVersion = '5.5.1'
+    gradleVersion = '5.6.2'
 }
 
 dependencies {
     compileOnly 'com.google.code.findbugs:annotations:[3.0.1,)'
     implementation 'com.h2database:h2:1.4.199'
-    implementation 'org.apache.commons:commons-dbcp2:2.6.0'
+    implementation 'org.apache.commons:commons-dbcp2:2.7.0'
     implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'org.apache.commons:commons-pool2:2.6.2'
-    implementation 'org.postgresql:postgresql:42.2.6.jre7'
+    implementation 'org.apache.commons:commons-pool2:2.7.0'
+    implementation 'org.postgresql:postgresql:42.2.8.jre7'
     implementation 'mysql:mysql-connector-java:6.0.6'
-    implementation 'org.iot-dsa:dslink:0.22.2'
-    implementation 'org.iot-dsa:commons:0.22.2'
+    implementation 'org.iot-dsa:dslink:0.23.0'
+    implementation 'org.iot-dsa:commons:0.23.0'
 }
 
 run {
