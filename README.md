@@ -13,16 +13,16 @@ A Java DSLink that works with JDBC.
 
 *   Download MS SQL JDCB from [https://www.microsoft.com/en-US/download/details.aspx?id=11774](https://www.microsoft.com/en-US/download/details.aspx?id=11774).
 *   Install MS SQL driver.
-*   Copy MS SQL driver jar file (select correct jar version based on JDK). Typical path is <Microsoft JDBC Driver 6.0 for SQL Server>\sqljdbc_6.0\enu\jre8 (for JDK 8).
+*   Copy MS SQL driver jar file (select correct jar version based on JDK). Typical path is `<Microsoft JDBC Driver 6.0 for SQL Server>\sqljdbc_6.0\enu\jre8` (for JDK 8).
 *   Copy driver jar file to **dsa-server\dslinks\jdbc\lib** folder.
 
 ## Step 3: Restart DSLink
 
-*   Restart DSLink : **/sys** -> **Links** -> **JDBC** right-click and select restart dslink.
+*   Restart DSLink : **sys** -> **links** -> **JDBC** right-click and select restart dslink.
 
 ## Step 4: Configure MS JDBC
 
-*   Right click **/downstream** -> **jdbc** (Name may changes based on your DSLink name from step 1).
+*   Right click **downstream** -> **jdbc** (Name may changes based on your DSLink name from step 1).
 *   Select MS SQL driver from a list.
 
 ## Example Connection Strings
