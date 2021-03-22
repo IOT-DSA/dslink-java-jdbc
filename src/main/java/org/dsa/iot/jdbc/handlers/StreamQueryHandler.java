@@ -52,8 +52,13 @@ public class StreamQueryHandler implements Handler<ActionResult> {
 
             try {
                 doQuery(sql, event);
-            } catch (SQLException | ClassNotFoundException e) {
+            } catch (SQLException e) {
+                String msg = e.getMessage() + ": SQLSTATE=" + e.getSQLState();
+                setStatusMessage(msg, e);
+                throw new RuntimeException(msg, e);
+            } catch (ClassNotFoundException e) {
                 setStatusMessage(e.getMessage(), e);
+                throw new RuntimeException(e.getMessage(), e);
             }
         } else {
             setStatusMessage("sql is empty", null);
@@ -66,11 +71,13 @@ public class StreamQueryHandler implements Handler<ActionResult> {
         final Connection connection = getConnection();
         final Container<ResultSet> rSet = new Container<>();
         final Statement stmt;
+        Statement stmtForClosing = null;
 
         try {
             final String cursName = randomCursorName();
             connection.setAutoCommit(false);
             stmt = connection.createStatement();
+            stmtForClosing = stmt;
 
             LOG.debug("start querying");
             stmt.execute("DECLARE " + cursName + " CURSOR FOR " + query);
@@ -138,6 +145,7 @@ public class StreamQueryHandler implements Handler<ActionResult> {
                             }
                         }
                     } catch (SQLException e) {
+                        setStatusMessage(e.getMessage(), e);
                         LOG.error("", e);
                         table.close();
                     } finally {
@@ -158,8 +166,19 @@ public class StreamQueryHandler implements Handler<ActionResult> {
                     }
                 }
             });
-        } catch (SQLException e) {
-            setStatusMessage(e.getMessage(), e);
+        } catch (Exception x) {
+            try {
+                if (stmtForClosing != null) {
+                    stmtForClosing.close();
+                }
+            } catch (SQLException ignored) {
+            }
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ignored) {
+            }
         } finally {
             if (rSet.getValue() != null) {
                 try {
