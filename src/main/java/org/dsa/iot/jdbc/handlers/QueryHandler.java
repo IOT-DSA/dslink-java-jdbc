@@ -45,8 +45,13 @@ public class QueryHandler implements Handler<ActionResult> {
 
             try {
                 doQuery(sql, event);
-            } catch (SQLException | ClassNotFoundException e) {
+            } catch (SQLException e) {
+                String msg = e.getMessage() + ": SQLSTATE=" + e.getSQLState();
+                setStatusMessage(msg, e);
+                throw new RuntimeException(msg, e);
+            } catch (ClassNotFoundException e) {
                 setStatusMessage(e.getMessage(), e);
+                throw new RuntimeException(e.getMessage(), e);
             }
         } else {
             setStatusMessage("sql is empty", null);
@@ -90,36 +95,27 @@ public class QueryHandler implements Handler<ActionResult> {
             setStatusMessage(builder, null);
             event.setStreamState(StreamState.CLOSED);
             LOG.debug("send data");
-        } catch (SQLException e) {
-            String msg = e.getMessage();
-            if (msg.contains("No results were returned by the query")) {
-                LOG.warn("No results were returned by the query. For queries that shouldn't return results, use the Update action instead");
-            }
-            setStatusMessage(msg, e);
         } finally {
             try {
                 if (rSet != null) {
                     rSet.close();
                     LOG.debug("rSet.close()");
                 }
-            } catch (SQLException e) {
-                setStatusMessage(e.getMessage(), e);
+            } catch (SQLException ignore) {
             }
             try {
                 if (stmt != null) {
                     stmt.close();
                     LOG.debug("stmt.close()");
                 }
-            } catch (SQLException e) {
-                setStatusMessage(e.getMessage(), e);
+            } catch (SQLException ignore) {
             }
             try {
                 if (connection != null) {
                     connection.close();
                     LOG.debug("connection.close()");
                 }
-            } catch (SQLException e) {
-                setStatusMessage(e.getMessage(), e);
+            } catch (SQLException ignore) {
             }
         }
     }
